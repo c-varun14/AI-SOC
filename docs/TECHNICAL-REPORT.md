@@ -14,7 +14,7 @@ The inspection record is stored in SQLite and exposed through history and JSON e
 
 The vision model is exported as a float32 forward graph and deployed in the AArch64 ExecuTorch 1.6.0 runtime with XNNPACK. The Pi verification log records 315 ms mean vision forward latency over the 200-image test set. A wrapper parity log records identical printed probabilities and decisions between the tested wrappers.
 
-Llama 3.2 1B Instruct is exported for ExecuTorch with 8da4w weight quantization, group size 128, 4-bit embedding quantization with groups of 32, float32 override, KV cache, and XNNPACK lowering. The runtime uses four CPU threads. One logged generation measured 11.28 tokens/s prefill and 1.74 tokens/s decode; model loading took about 17 seconds and peak child RSS was about 818 MB. These are process-level measurements on the 2 GB Pi, not a total application memory guarantee.
+Llama 3.2 1B Instruct is exported for ExecuTorch with 8da4w weight quantization, group size 128, 4-bit embedding quantization with groups of 32, float32 override, KV cache, and XNNPACK lowering. The runtime uses four CPU threads. One logged generation measured 11.28 tokens/s prefill and 1.74 tokens/s decode; model loading took about 17 seconds and peak child RSS was about about 800 MiB (818,188 KiB). These are process-level measurements on the 2 GB Pi, not a total application memory guarantee.
 
 The standalone runner was cross-compiled for AArch64 Cortex-A72 using Arm GNU `aarch64-none-linux-gnu` compilers and the toolchain-provided Linux sysroot. `ldd` on the Pi confirms runtime shared-library resolution against the deployed ExecuTorch environment and Pi system libraries; the tested system reports glibc 2.41 ([Pi dependency inventory](../evidence/rollback/pi-checkpoint.log)). The Llama runner uses four CPU threads, and export used `OMP_NUM_THREADS=2`. Build configuration and artifact hashes are recorded in [the runner configuration log](../evidence/pillguard-release-runner-config.log), [cross-build recipe](../models/llama-build/README.md), and [Pi manifest](../evidence/pi-sha256.txt). The exported model and runner use the original tokenizer. The Pi idle check recorded 43.8 °C and no throttling.
 
@@ -26,7 +26,7 @@ The standalone runner was cross-compiled for AArch64 Cortex-A72 using Arm GNU `a
 | Test set at threshold 0.30 | 200 images; 83.0% accuracy; 82.0% defect recall; 83.7% precision | [Dataset metrics](../evidence/dataset/metrics.json) |
 | Confusion matrix at threshold 0.30 | TP 82, FN 18, FP 16, TN 84 | [Dataset metrics](../evidence/dataset/metrics.json) |
 | Llama Q4 prefill / decode | 11.28 / 1.74 tokens/s | [Pi runner log](../evidence/pi-q4-16-tokens.log) |
-| Llama peak child RSS / model load | 818 MB / 17 s | [Pi runner log](../evidence/pi-q4-16-tokens.log) |
+| Llama peak child RSS / model load | about 800 MiB (818,188 KiB) / 17 s | [Pi runner log](../evidence/pi-q4-16-tokens.log) |
 | Legacy sequential inspection | optimized: 22.1–22.9 s; baseline: 28.3–31.1 s | [Pi offline uploads](../evidence/pi-offline-uploads.log) |
 | Idle temperature / throttling | 43.8 °C / none observed | [Pi verification](../evidence/pi/pi_verification_2026-11-23.txt) |
 | Offline acceptance | PASS and FAIL uploads, persistence and export with networking removed | [Offline acceptance](../evidence/pi-offline-uploads.log) |

@@ -19,7 +19,7 @@ Indian regulators flag tablets as “not of standard quality” for visible prob
 | Vision forward, FP32 XNNPACK | 315 ms mean | [Dataset metrics](evidence/dataset/metrics.json) |
 | Test set at threshold 0.30 | 200 images; 83.0% accuracy; 82.0% defect recall; 83.7% precision | [Dataset metrics](evidence/dataset/metrics.json) |
 | Llama Q4 prefill / decode | 11.28 / 1.74 tokens/s | [Pi runner log](evidence/pi-q4-16-tokens.log) |
-| Llama peak child RSS / model load | 818 MB / 17 s | [Pi runner log](evidence/pi-q4-16-tokens.log) |
+| Llama peak child RSS / model load | about 800 MiB (818,188 KiB) / 17 s | [Pi runner log](evidence/pi-q4-16-tokens.log) |
 | Legacy sequential inspection | optimized: 22.1–22.9 s; baseline: 28.3–31.1 s | [Pi offline uploads](evidence/pi-offline-uploads.log) |
 | Idle temperature / throttling | 43.8 °C / none observed | [Pi verification](evidence/pi/pi_verification_2026-11-23.txt) |
 | Offline acceptance | PASS and FAIL uploads, persistence and export with networking removed | [Offline acceptance](evidence/pi-offline-uploads.log) |
@@ -32,7 +32,9 @@ The test split has a flagged possible same-source photograph overlap; see [datas
 
 ## What Llama does and does not do
 
-Llama never sets PASS/FAIL or chooses the required action. Deterministic QC logic sets the verdict and review action from the vision output. The current advisory repeats a constrained explanation; parallel work on `llama-check` changes the advisory to select one of five approved QC checks using recent FAIL trends and an operator shift note, with a rule-based fallback. That selector is scored against a rule baseline; its score is pending measurement.
+Llama never sets PASS/FAIL or chooses the required action. Deterministic QC logic sets both from the vision output, and the verdict is returned before Llama starts.
+
+After each verdict, Llama 3.2 1B reads the result, the FAIL count in the last 10 inspections and the operator's free-text shift note (for example "changed punch set at 11:40"), and picks one of five approved QC checks. A reply that is not one of those numbers is discarded and a rule baseline picks instead; the UI says which one chose. The rule baseline ignores the shift note, so the 12 seeded scenarios in `eval/` measure whether reading the note adds anything.
 
 ## Quick start
 
