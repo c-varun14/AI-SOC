@@ -1,14 +1,16 @@
-# PS5 compliance and competition status
+# PS5 requirement mapping
 
-| Topic | Published requirement or objective | Evidence status |
+| PS5 requirement or capability | How PillGuard meets it | Evidence |
 |---|---|---|
-| Llama through ExecuTorch on device | Explicit technical requirement | Verified real Pi ARM64 Q4 generation and offline accepted advisory text. |
-| Edge vision, QC recommendations and logging | Expected project capabilities | Binary vision, deterministic PASS/FAIL, quarantine and normal review, persisted SQLite history and JSON export verified. |
-| Defect subtype and severity | Expected project capabilities | Open. Binary label output supplies neither. No adjudicated taxonomy, subtype dataset or severity rubric is established in the archive. |
-| Real-time edge operation | Headline objective and listed capability | Prototype quick QC response measured on two images. Sustained throughput and tail latency remain unverified. The public PS5 page specifies no numeric latency threshold or separate pass/fail rubric for these capabilities. |
-| Physical camera | Arm-based Linux is listed as a hardware option. Android hardware mentions a camera. | Live-camera capture remains untested because hardware was unavailable. The published Linux option lists no physical-camera requirement. |
-| GitHub hosting | Required by the public challenge guidelines | The team supplied `c-varun14/AI-SOC`. The last public API check reported an empty main tree. This local staging revision remains unpublished. |
-| Submission form | Required by the public challenge guidelines | **Unverified.** No form receipt, submission ID or acceptance confirmation was supplied. |
-| Round-specific judging and team progression | The public page describes open qualifying and proof-of-concept rounds | **Unverified for this team.** No organizer-confirmed round-specific rubric, capability weighting, team advancement decision, or judging outcome was supplied. |
+| Edge AI on Arm hardware | EfficientNetV2-S runs through ExecuTorch and XNNPACK on Raspberry Pi 4 Model B, using the Arm Cortex-A72 CPU. | [Pi verification](../evidence/pi/pi_verification_2026-11-23.txt) · [Vision parity](../evidence/pi-vision-parity.log) |
+| Llama through ExecuTorch on device | Llama 3.2 1B Instruct Q4 runs locally through an AArch64 ExecuTorch runner. | [Llama inference](../evidence/pi-q4-16-tokens.log) · [Export details](../evidence/llama-export.log) |
+| Defect detection | The binary classifier screens visible tablet defects and returns deterministic PASS or FAIL at the configured threshold. | [Dataset metrics](../evidence/dataset/metrics.json) · [Dataset audit](DATASET.md) |
+| Quality-control recommendations | PASS routes to standard QC review; FAIL routes to quarantine. Llama supplies a separate advisory and cannot change the verdict or action. | [Offline upload acceptance](../evidence/pi-offline-uploads.log) · [Architecture](ARCHITECTURE.md) |
+| Logging and review | SQLite stores inspection records; history and JSON export were checked across restart. | [Offline acceptance](../evidence/offline-acceptance-results.json) |
+| Offline edge operation | Upload acceptance ran with networking removed and verified normal and defective cases. | [Pi offline log](../evidence/pi-offline-uploads.log) |
+| Real-time edge operation | Vision forward is measured on Pi. Earlier sequential inspections took 22–28 seconds; verdict-first prototype returns QC in about 1.2 seconds, with current release-path timing pending. | [Dataset metrics](../evidence/dataset/metrics.json) · [Sequential uploads](../evidence/pi-offline-uploads.log) · [Verdict-first prototype](../evidence/isolated-async-reference.log) |
+| Defect subtype and severity | Phase 1 reports a binary label. Severity measurement is planned and pending. | [Limitations and Phase 2](TECHNICAL-REPORT.md) |
+| Physical camera input | Browser camera and video-frame controls exist; recorded Pi acceptance used uploads. A fixed camera setup is planned for Phase 2. | [UI description](UI-CHANGES.md) · [Phase 2 plan](TECHNICAL-REPORT.md) |
+| PS5 implementation and results | System design, deployment measurements, limitations and next steps are documented in this repository. | [Technical report](TECHNICAL-REPORT.md) · [Evidence index](../evidence/README.md) |
 
-[Official PS5 and challenge guidelines](https://arm-education.github.io/Arm-Developer-Labs/Bharat_AI_SoC_2026_27.html#project-problem-statements) · [Technical report](TECHNICAL-REPORT.md)
+The model test set has a possible source-overlap finding, so its metrics are provisional. Independent, specimen-level evaluation is described in the [validation plan](INDEPENDENT-VALIDATION.md).
