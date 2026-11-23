@@ -1,0 +1,44 @@
+Host architecture: x86_64
+ExecuTorch 1.6.0+cpu
+=== PILLGUARD IMAGE INFERENCE ===
+Image: <fixture-directory>/normal.jpeg
+Preprocessing SUCCESS
+Input: <fixture-directory>/normal.jpeg
+Output: <temporary>/input.bin
+Tensor shape: (3, 224, 224)
+Tensor dtype: float32
+Output bytes: 602112
+PillGuard Experiment 2 Inference Test
+Forward method loaded successfully
+Real pill image tensor loaded
+Inference SUCCESS
+Forward latency: 135.375 ms
+Defective score: -1.61846
+Normal score: 2.12685
+=== PILLGUARD DEPLOYMENT RESULT ===
+Defective probability: 0.0230829
+Normal probability: 0.976917
+Threshold: 0.3
+Prediction: NORMAL
+Prototype screening only; not validated for pharmaceutical quality control.
+=== PILLGUARD IMAGE INFERENCE ===
+Image: <fixture-directory>/defective.jpeg
+Preprocessing SUCCESS
+Input: <fixture-directory>/defective.jpeg
+Output: <temporary>/input.bin
+Tensor shape: (3, 224, 224)
+Tensor dtype: float32
+Output bytes: 602112
+PillGuard Experiment 2 Inference Test
+Forward method loaded successfully
+Real pill image tensor loaded
+Inference SUCCESS
+Forward latency: 126.793 ms
+Defective score: 0.291085
+Normal score: -0.897429
+=== PILLGUARD DEPLOYMENT RESULT ===
+Defective probability: 0.766475
+Normal probability: 0.233525
+Threshold: 0.3
+Prediction: DEFECTIVE
+Prototype screening only; not validated for pharmaceutical quality control.

@@ -1,0 +1,7 @@
+# WSL verification
+
+The review used local Git clones and a temporary Python 3.12 virtual environment. The pinned Pillow 13.0.0 and NumPy 2.5.4 installed from PyPI. The HTTP smoke test used synthetic images and temporary SQLite with the actual preprocessor and controlled runner stand-ins. The native vision check used the existing WSL ExecuTorch 1.6.0+cpu SDK, CMake 3.28.3, GNU C++ 13.3.0, the exact deployed vision model, and authorized read-only demo fixtures. The single-pass executable built from the staged sources and returned NORMAL and DEFECTIVE for the two inputs. [Native vision log](../evidence/wsl-native-vision.log)
+
+The application CLI and vision-wrapper CLI were checked. The archived predictions recomputed the checked-in metric JSON byte-for-byte. The export-helper CLI was checked with the existing model toolchain. No model export or training was run. The Llama runner source build recipe, ARM64 runtime and integrated model inference on the Pi are supported by prior evidence. The Pi was powered off for this review. [Historical offline Pi run](../evidence/pi-offline-uploads.log)
+
+The app, vision source and preprocessing scripts match the verified optimized deployment copies. The archive audit excluded credentials, local account paths, raw tablet images, model weights, native binaries, package archives, caches, and inspection databases. The staged PDF retains the report body and replaces machine-specific hyperlinks with relative references. The staged WebM is the original recorded upload demo, with attribution accompanying it.
