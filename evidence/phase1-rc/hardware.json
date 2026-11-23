@@ -1,0 +1,5379 @@
+{
+  "revision": "0b052190211f7857caf92c2a8d61d1d60f231a5a",
+  "machine": "aarch64",
+  "device_model": "Raspberry Pi 4 Model B Rev 1.4",
+  "started_utc": "2026-11-23T21:39:18.633923+00:00",
+  "throttled_before": "throttled=0x80000",
+  "vmstat_before": {
+    "pswpin": 0,
+    "pswpout": 0,
+    "oom_kill": 0
+  },
+  "cases": [
+    {
+      "case": "first after service startup",
+      "http_verdict_s": 1.227,
+      "record": {
+        "schema_version": "1.1",
+        "inspection_id": "afe4fee4ea8f41b7a3722e5b371952b0",
+        "created_at": "2026-11-23T21:39:19.011851+00:00",
+        "source": "upload",
+        "shift_note": "",
+        "input_validation": "OPERATOR_CONFIRMED_PILL_PRESENT",
+        "verdict_wall_s": 1.204,
+        "preprocess_ms": null,
+        "llama_model": "pillguard_llama32_1b_q4_xnnpack.pte",
+        "llama_status": "COMPLETED",
+        "llama_explanation": "Continue standard QC review.",
+        "llama_raw_for_review": ":\n\n1. Standard QC review",
+        "llama_metrics": {
+          "prefill_token_per_sec": 14.5449,
+          "decode_token_per_sec": 1.70823,
+          "prompt_tokens": 93,
+          "generated_tokens": 5,
+          "model_load_start_ms": 1795469960464,
+          "model_load_end_ms": 1795469970190,
+          "inference_start_ms": 1795469970190,
+          "inference_end_ms": 1795469979511,
+          "model_execution_start_ms": 1795469978925,
+          "model_execution_end_ms": 1795469979511,
+          "prompt_eval_end_ms": 1795469976584,
+          "first_token_ms": 1795469976584,
+          "aggregate_sampling_time_ms": 2,
+          "aggregate_model_execution_time_ms": 9317,
+          "SCALING_FACTOR_UNITS_PER_SECOND": 1000
+        },
+        "llama_latency_s": 19.367,
+        "vision_model": "pillguard_efficientnetv2_s_experiment2_xnnpack.pte",
+        "vision_forward_ms": 327.111,
+        "classification": "normal",
+        "model_score": 0.976917,
+        "probability_defective": 0.0230831,
+        "probability_normal": 0.976917,
+        "threshold": 0.3,
+        "screening_decision": "PASS",
+        "required_action": "STANDARD_QC_REVIEW",
+        "advisory": "No defect predicted by the model. Follow standard quality-control procedures. This prediction is not authorization to dispense.",
+        "severity": "NOT_ASSESSED",
+        "dispensing_authorized": false,
+        "vision_wall_s": 1.182,
+        "advisory_check_id": 1,
+        "advisory_check_text": "Continue standard QC review.",
+        "advisory_source": "llama",
+        "rule_baseline_check_id": 1,
+        "llama_diagnostic": "I tokenizers:regex.cpp:40] Registering override fallback regex\nI tokenizers:regex.cpp:40] Registering override fallback regex\nE tokenizers:hf_tokenizer.cpp:167] Error parsing json file: [json.exception.parse_error.101] parse error at line 1, column 1: syntax error while parsing value - invalid literal; last read: 'I'\n",
+        "recent_last10_fails": 0,
+        "recent_last3_fails": 0,
+        "llama_queue_s": 0.003
+      }
+    },
+    {
+      "case": "warm, inference idle at submission",
+      "http_verdict_s": 1.187,
+      "record": {
+        "schema_version": "1.1",
+        "inspection_id": "fb193a9e05064529bf5261e6f40cfefd",
+        "created_at": "2026-11-23T21:39:39.634302+00:00",
+        "source": "upload",
+        "shift_note": "",
+        "input_validation": "OPERATOR_CONFIRMED_PILL_PRESENT",
+        "verdict_wall_s": 1.163,
+        "preprocess_ms": null,
+        "llama_model": "pillguard_llama32_1b_q4_xnnpack.pte",
+        "llama_status": "FALLBACK",
+        "llama_explanation": "Re-inspect the tablet under the bench lamp and confirm the screening observation.",
+        "llama_raw_for_review": ":\n\n2. Manual tablet re",
+        "llama_metrics": {
+          "prefill_token_per_sec": 14.2904,
+          "decode_token_per_sec": 1.76243,
+          "prompt_tokens": 87,
+          "generated_tokens": 5,
+          "model_load_start_ms": 1795469981068,
+          "model_load_end_ms": 1795469990787,
+          "inference_start_ms": 1795469990787,
+          "inference_end_ms": 1795469999712,
+          "model_execution_start_ms": 1795469999146,
+          "model_execution_end_ms": 1795469999712,
+          "prompt_eval_end_ms": 1795469996875,
+          "first_token_ms": 1795469996875,
+          "aggregate_sampling_time_ms": 0,
+          "aggregate_model_execution_time_ms": 8923,
+          "SCALING_FACTOR_UNITS_PER_SECOND": 1000
+        },
+        "llama_latency_s": 18.966,
+        "vision_model": "pillguard_efficientnetv2_s_experiment2_xnnpack.pte",
+        "vision_forward_ms": 324.311,
+        "classification": "defective",
+        "model_score": 0.766473,
+        "probability_defective": 0.766473,
+        "probability_normal": 0.233527,
+        "threshold": 0.3,
+        "screening_decision": "FAIL",
+        "required_action": "QUARANTINE",
+        "advisory": "Potentially defective tablet. Quarantine for quality review. Do not dispense.",
+        "severity": "NOT_ASSESSED",
+        "dispensing_authorized": false,
+        "vision_wall_s": 1.161,
+        "advisory_check_id": 2,
+        "advisory_check_text": "Re-inspect the tablet under the bench lamp and confirm the screening observation.",
+        "advisory_source": "rule_fallback",
+        "rule_baseline_check_id": 2,
+        "llama_diagnostic": "I tokenizers:regex.cpp:40] Registering override fallback regex\nI tokenizers:regex.cpp:40] Registering override fallback regex\nE tokenizers:hf_tokenizer.cpp:167] Error parsing json file: [json.exception.parse_error.101] parse error at line 1, column 1: syntax error while parsing value - invalid literal; last read: 'I'\n",
+        "recent_last10_fails": 0,
+        "recent_last3_fails": 0,
+        "llama_queue_s": 0.003
+      }
+    },
+    {
+      "case": "submitted while Llama was active",
+      "http_verdict_s": 19.999,
+      "record": {
+        "schema_version": "1.1",
+        "inspection_id": "4cb5e6311461435f8f1c1a9e9420b362",
+        "created_at": "2026-11-23T21:39:40.993259+00:00",
+        "source": "video_frame",
+        "shift_note": "",
+        "input_validation": "OPERATOR_CONFIRMED_PILL_PRESENT",
+        "verdict_wall_s": 19.967,
+        "preprocess_ms": null,
+        "llama_model": "pillguard_llama32_1b_q4_xnnpack.pte",
+        "llama_status": "COMPLETED",
+        "llama_explanation": "Continue standard QC review.",
+        "llama_raw_for_review": ":\n\n1. Standard QC review",
+        "llama_metrics": {
+          "prefill_token_per_sec": 14.5859,
+          "decode_token_per_sec": 1.69952,
+          "prompt_tokens": 93,
+          "generated_tokens": 5,
+          "model_load_start_ms": 1795470001231,
+          "model_load_end_ms": 1795470010885,
+          "inference_start_ms": 1795470010885,
+          "inference_end_ms": 1795470020203,
+          "model_execution_start_ms": 1795470019618,
+          "model_execution_end_ms": 1795470020203,
+          "prompt_eval_end_ms": 1795470017261,
+          "first_token_ms": 1795470017261,
+          "aggregate_sampling_time_ms": 0,
+          "aggregate_model_execution_time_ms": 9315,
+          "SCALING_FACTOR_UNITS_PER_SECOND": 1000
+        },
+        "llama_latency_s": 19.292,
+        "vision_model": "pillguard_efficientnetv2_s_experiment2_xnnpack.pte",
+        "vision_forward_ms": 324.86,
+        "classification": "normal",
+        "model_score": 0.976917,
+        "probability_defective": 0.0230831,
+        "probability_normal": 0.976917,
+        "threshold": 0.3,
+        "screening_decision": "PASS",
+        "required_action": "STANDARD_QC_REVIEW",
+        "advisory": "No defect predicted by the model. Follow standard quality-control procedures. This prediction is not authorization to dispense.",
+        "severity": "NOT_ASSESSED",
+        "dispensing_authorized": false,
+        "vision_wall_s": 1.172,
+        "advisory_check_id": 1,
+        "advisory_check_text": "Continue standard QC review.",
+        "advisory_source": "llama",
+        "rule_baseline_check_id": 1,
+        "llama_diagnostic": "I tokenizers:regex.cpp:40] Registering override fallback regex\nI tokenizers:regex.cpp:40] Registering override fallback regex\nE tokenizers:hf_tokenizer.cpp:167] Error parsing json file: [json.exception.parse_error.101] parse error at line 1, column 1: syntax error while parsing value - invalid literal; last read: 'I'\n",
+        "recent_last10_fails": 1,
+        "recent_last3_fails": 1,
+        "llama_queue_s": 0.003
+      }
+    }
+  ],
+  "status": "passed",
+  "system": {
+    "device_model": "Raspberry Pi 4 Model B Rev 1.4",
+    "cpu_architecture": "aarch64",
+    "core_count": 4,
+    "total_ram_bytes": 1934114816,
+    "available_ram_bytes": 1682112512,
+    "soc_temperature_c": 46.738,
+    "uptime_s": 5208.86,
+    "network_up": false
+  },
+  "server_ready_s": 0.352,
+  "network_interfaces": [
+    "lo"
+  ],
+  "service_return_code": 0,
+  "remaining_owned_processes": [],
+  "throttled_after": "throttled=0x80000",
+  "vmstat_after": {
+    "pswpin": 0,
+    "pswpout": 0,
+    "oom_kill": 0
+  },
+  "samples": [
+    {
+      "since_start_s": 0.001,
+      "mem_available_kib": 1658860,
+      "swap_used_kib": 0,
+      "temperature_c": 46.738,
+      "load_average": "0.00 0.46 0.77 3/163 2523",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 3596
+        }
+      }
+    },
+    {
+      "since_start_s": 0.205,
+      "mem_available_kib": 1645776,
+      "swap_used_kib": 0,
+      "temperature_c": 46.251,
+      "load_average": "0.00 0.46 0.77 2/163 2523",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 20880
+        }
+      }
+    },
+    {
+      "since_start_s": 0.407,
+      "mem_available_kib": 1638036,
+      "swap_used_kib": 0,
+      "temperature_c": 46.738,
+      "load_average": "0.00 0.46 0.77 3/166 2527",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29064
+        },
+        "2527": {
+          "name": "python3",
+          "rss_kib": 7952
+        }
+      }
+    },
+    {
+      "since_start_s": 0.61,
+      "mem_available_kib": 1627108,
+      "swap_used_kib": 0,
+      "temperature_c": 46.738,
+      "load_average": "0.00 0.46 0.77 2/167 2528",
+      "owned_process_rss": {
+        "2528": {
+          "name": "python3",
+          "rss_kib": 16908
+        },
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29064
+        },
+        "2527": {
+          "name": "python3",
+          "rss_kib": 12160
+        }
+      }
+    },
+    {
+      "since_start_s": 0.813,
+      "mem_available_kib": 1613508,
+      "swap_used_kib": 0,
+      "temperature_c": 47.712,
+      "load_average": "0.08 0.47 0.77 2/167 2528",
+      "owned_process_rss": {
+        "2528": {
+          "name": "python3",
+          "rss_kib": 32244
+        },
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29064
+        },
+        "2527": {
+          "name": "python3",
+          "rss_kib": 12160
+        }
+      }
+    },
+    {
+      "since_start_s": 1.017,
+      "mem_available_kib": 1541440,
+      "swap_used_kib": 0,
+      "temperature_c": 47.712,
+      "load_average": "0.08 0.47 0.77 2/167 2529",
+      "owned_process_rss": {
+        "2529": {
+          "name": "pillguard_deplo",
+          "rss_kib": 77312
+        },
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29064
+        },
+        "2527": {
+          "name": "python3",
+          "rss_kib": 12160
+        }
+      }
+    },
+    {
+      "since_start_s": 1.223,
+      "mem_available_kib": 1498940,
+      "swap_used_kib": 0,
+      "temperature_c": 48.686,
+      "load_average": "0.08 0.47 0.77 5/170 2532",
+      "owned_process_rss": {
+        "2529": {
+          "name": "pillguard_deplo",
+          "rss_kib": 99476
+        },
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29064
+        },
+        "2527": {
+          "name": "python3",
+          "rss_kib": 12160
+        }
+      }
+    },
+    {
+      "since_start_s": 1.443,
+      "mem_available_kib": 1500592,
+      "swap_used_kib": 0,
+      "temperature_c": 49.173,
+      "load_average": "0.08 0.47 0.77 5/170 2532",
+      "owned_process_rss": {
+        "2529": {
+          "name": "pillguard_deplo",
+          "rss_kib": 99476
+        },
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29064
+        },
+        "2527": {
+          "name": "python3",
+          "rss_kib": 12160
+        }
+      }
+    },
+    {
+      "since_start_s": 1.651,
+      "mem_available_kib": 1589464,
+      "swap_used_kib": 0,
+      "temperature_c": 48.199,
+      "load_average": "0.08 0.47 0.77 2/168 2537",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29312
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 14784
+        }
+      }
+    },
+    {
+      "since_start_s": 1.854,
+      "mem_available_kib": 1561364,
+      "swap_used_kib": 0,
+      "temperature_c": 47.712,
+      "load_average": "0.08 0.47 0.77 2/168 2538",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29316
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 42496
+        }
+      }
+    },
+    {
+      "since_start_s": 2.057,
+      "mem_available_kib": 1528764,
+      "swap_used_kib": 0,
+      "temperature_c": 47.712,
+      "load_average": "0.08 0.47 0.77 2/168 2540",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29320
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 80176
+        }
+      }
+    },
+    {
+      "since_start_s": 2.26,
+      "mem_available_kib": 1513664,
+      "swap_used_kib": 0,
+      "temperature_c": 47.712,
+      "load_average": "0.08 0.47 0.77 3/168 2541",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29324
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 92992
+        }
+      }
+    },
+    {
+      "since_start_s": 2.462,
+      "mem_available_kib": 1504484,
+      "swap_used_kib": 0,
+      "temperature_c": 48.686,
+      "load_average": "0.08 0.47 0.77 2/168 2542",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29324
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 105152
+        }
+      }
+    },
+    {
+      "since_start_s": 2.665,
+      "mem_available_kib": 1496984,
+      "swap_used_kib": 0,
+      "temperature_c": 48.686,
+      "load_average": "0.08 0.47 0.77 2/168 2543",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29324
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 127504
+        }
+      }
+    },
+    {
+      "since_start_s": 2.867,
+      "mem_available_kib": 1478384,
+      "swap_used_kib": 0,
+      "temperature_c": 49.173,
+      "load_average": "0.08 0.47 0.77 2/168 2545",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29328
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 126272
+        }
+      }
+    },
+    {
+      "since_start_s": 3.07,
+      "mem_available_kib": 1465684,
+      "swap_used_kib": 0,
+      "temperature_c": 48.686,
+      "load_average": "0.08 0.47 0.77 2/168 2546",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 152948
+        }
+      }
+    },
+    {
+      "since_start_s": 3.273,
+      "mem_available_kib": 1450084,
+      "swap_used_kib": 0,
+      "temperature_c": 48.686,
+      "load_average": "0.08 0.47 0.77 2/168 2547",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 157364
+        }
+      }
+    },
+    {
+      "since_start_s": 3.475,
+      "mem_available_kib": 1447212,
+      "swap_used_kib": 0,
+      "temperature_c": 49.66,
+      "load_average": "0.08 0.47 0.77 2/167 2549",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 170628
+        }
+      }
+    },
+    {
+      "since_start_s": 3.678,
+      "mem_available_kib": 1432112,
+      "swap_used_kib": 0,
+      "temperature_c": 48.686,
+      "load_average": "0.08 0.47 0.77 2/167 2550",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 183640
+        }
+      }
+    },
+    {
+      "since_start_s": 3.88,
+      "mem_available_kib": 1424612,
+      "swap_used_kib": 0,
+      "temperature_c": 49.66,
+      "load_average": "0.08 0.47 0.77 2/167 2551",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 191436
+        }
+      }
+    },
+    {
+      "since_start_s": 4.083,
+      "mem_available_kib": 1408912,
+      "swap_used_kib": 0,
+      "temperature_c": 49.173,
+      "load_average": "0.08 0.47 0.77 2/167 2553",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 218424
+        }
+      }
+    },
+    {
+      "since_start_s": 4.286,
+      "mem_available_kib": 1392208,
+      "swap_used_kib": 0,
+      "temperature_c": 50.147,
+      "load_average": "0.08 0.47 0.77 2/167 2554",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 218196
+        }
+      }
+    },
+    {
+      "since_start_s": 4.488,
+      "mem_available_kib": 1385716,
+      "swap_used_kib": 0,
+      "temperature_c": 50.147,
+      "load_average": "0.08 0.47 0.77 2/167 2555",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 242352
+        }
+      }
+    },
+    {
+      "since_start_s": 4.692,
+      "mem_available_kib": 1374216,
+      "swap_used_kib": 0,
+      "temperature_c": 49.66,
+      "load_average": "0.08 0.47 0.77 2/167 2557",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 248548
+        }
+      }
+    },
+    {
+      "since_start_s": 4.894,
+      "mem_available_kib": 1359888,
+      "swap_used_kib": 0,
+      "temperature_c": 50.147,
+      "load_average": "0.08 0.47 0.77 2/167 2558",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 261528
+        }
+      }
+    },
+    {
+      "since_start_s": 5.097,
+      "mem_available_kib": 1344640,
+      "swap_used_kib": 0,
+      "temperature_c": 49.66,
+      "load_average": "0.08 0.47 0.77 2/167 2559",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 274336
+        }
+      }
+    },
+    {
+      "since_start_s": 5.3,
+      "mem_available_kib": 1337084,
+      "swap_used_kib": 0,
+      "temperature_c": 50.147,
+      "load_average": "0.08 0.47 0.77 3/167 2561",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 282088
+        }
+      }
+    },
+    {
+      "since_start_s": 5.503,
+      "mem_available_kib": 1326904,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.08 0.47 0.77 2/167 2562",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 309420
+        }
+      }
+    },
+    {
+      "since_start_s": 5.705,
+      "mem_available_kib": 1315756,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.15 0.48 0.77 2/167 2563",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 313460
+        }
+      }
+    },
+    {
+      "since_start_s": 5.908,
+      "mem_available_kib": 1303556,
+      "swap_used_kib": 0,
+      "temperature_c": 50.634,
+      "load_average": "0.15 0.48 0.77 2/167 2564",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 327136
+        }
+      }
+    },
+    {
+      "since_start_s": 6.11,
+      "mem_available_kib": 1280456,
+      "swap_used_kib": 0,
+      "temperature_c": 49.66,
+      "load_average": "0.15 0.48 0.77 2/167 2566",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 339828
+        }
+      }
+    },
+    {
+      "since_start_s": 6.313,
+      "mem_available_kib": 1273856,
+      "swap_used_kib": 0,
+      "temperature_c": 50.634,
+      "load_average": "0.15 0.48 0.77 2/167 2567",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 352736
+        }
+      }
+    },
+    {
+      "since_start_s": 6.515,
+      "mem_available_kib": 1269632,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.15 0.48 0.77 2/167 2568",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 375024
+        }
+      }
+    },
+    {
+      "since_start_s": 6.718,
+      "mem_available_kib": 1251784,
+      "swap_used_kib": 0,
+      "temperature_c": 50.634,
+      "load_average": "0.15 0.48 0.77 2/167 2570",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 373712
+        }
+      }
+    },
+    {
+      "since_start_s": 6.921,
+      "mem_available_kib": 1239084,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.15 0.48 0.77 2/167 2571",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 400552
+        }
+      }
+    },
+    {
+      "since_start_s": 7.123,
+      "mem_available_kib": 1231332,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.15 0.48 0.77 2/167 2572",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 404848
+        }
+      }
+    },
+    {
+      "since_start_s": 7.326,
+      "mem_available_kib": 1213608,
+      "swap_used_kib": 0,
+      "temperature_c": 50.634,
+      "load_average": "0.15 0.48 0.77 2/167 2574",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 418260
+        }
+      }
+    },
+    {
+      "since_start_s": 7.528,
+      "mem_available_kib": 1202896,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.15 0.48 0.77 2/167 2575",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 431152
+        }
+      }
+    },
+    {
+      "since_start_s": 7.731,
+      "mem_available_kib": 1184196,
+      "swap_used_kib": 0,
+      "temperature_c": 51.608,
+      "load_average": "0.15 0.48 0.77 2/167 2576",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 443736
+        }
+      }
+    },
+    {
+      "since_start_s": 7.933,
+      "mem_available_kib": 1180696,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.15 0.48 0.77 3/168 2578",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 466156
+        }
+      }
+    },
+    {
+      "since_start_s": 8.137,
+      "mem_available_kib": 1162196,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.15 0.48 0.77 2/167 2579",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 465368
+        }
+      }
+    },
+    {
+      "since_start_s": 8.339,
+      "mem_available_kib": 1149604,
+      "swap_used_kib": 0,
+      "temperature_c": 50.634,
+      "load_average": "0.15 0.48 0.77 2/167 2580",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 491688
+        }
+      }
+    },
+    {
+      "since_start_s": 8.542,
+      "mem_available_kib": 1142392,
+      "swap_used_kib": 0,
+      "temperature_c": 51.608,
+      "load_average": "0.15 0.48 0.77 2/167 2581",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 496244
+        }
+      }
+    },
+    {
+      "since_start_s": 8.744,
+      "mem_available_kib": 1130292,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.15 0.48 0.77 2/167 2583",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 509336
+        }
+      }
+    },
+    {
+      "since_start_s": 8.947,
+      "mem_available_kib": 1114192,
+      "swap_used_kib": 0,
+      "temperature_c": 51.608,
+      "load_average": "0.15 0.48 0.77 2/167 2584",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 522544
+        }
+      }
+    },
+    {
+      "since_start_s": 9.149,
+      "mem_available_kib": 1106792,
+      "swap_used_kib": 0,
+      "temperature_c": 50.147,
+      "load_average": "0.15 0.48 0.77 2/167 2585",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 529376
+        }
+      }
+    },
+    {
+      "since_start_s": 9.352,
+      "mem_available_kib": 1092776,
+      "swap_used_kib": 0,
+      "temperature_c": 50.634,
+      "load_average": "0.15 0.48 0.77 2/167 2587",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 557156
+        }
+      }
+    },
+    {
+      "since_start_s": 9.554,
+      "mem_available_kib": 1085164,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.15 0.48 0.77 2/167 2588",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 561132
+        }
+      }
+    },
+    {
+      "since_start_s": 9.757,
+      "mem_available_kib": 944160,
+      "swap_used_kib": 0,
+      "temperature_c": 51.608,
+      "load_average": "0.15 0.48 0.77 2/167 2589",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 692424
+        }
+      }
+    },
+    {
+      "since_start_s": 9.959,
+      "mem_available_kib": 944160,
+      "swap_used_kib": 0,
+      "temperature_c": 50.634,
+      "load_average": "0.15 0.48 0.77 2/167 2591",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 707016
+        }
+      }
+    },
+    {
+      "since_start_s": 10.162,
+      "mem_available_kib": 944160,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.15 0.48 0.77 2/167 2592",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 721544
+        }
+      }
+    },
+    {
+      "since_start_s": 10.364,
+      "mem_available_kib": 943952,
+      "swap_used_kib": 0,
+      "temperature_c": 52.095,
+      "load_average": "0.15 0.48 0.77 3/167 2593",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 736072
+        }
+      }
+    },
+    {
+      "since_start_s": 10.567,
+      "mem_available_kib": 944876,
+      "swap_used_kib": 0,
+      "temperature_c": 51.608,
+      "load_average": "0.15 0.48 0.77 2/167 2595",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 750600
+        }
+      }
+    },
+    {
+      "since_start_s": 10.769,
+      "mem_available_kib": 944876,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.22 0.49 0.77 2/167 2596",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29332
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 765192
+        }
+      }
+    },
+    {
+      "since_start_s": 10.972,
+      "mem_available_kib": 944876,
+      "swap_used_kib": 0,
+      "temperature_c": 52.582,
+      "load_average": "0.22 0.49 0.77 2/167 2597",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 779720
+        }
+      }
+    },
+    {
+      "since_start_s": 11.174,
+      "mem_available_kib": 944876,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.22 0.49 0.77 2/167 2598",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 794312
+        }
+      }
+    },
+    {
+      "since_start_s": 11.377,
+      "mem_available_kib": 946060,
+      "swap_used_kib": 0,
+      "temperature_c": 51.121,
+      "load_average": "0.22 0.49 0.77 2/167 2600",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 808840
+        }
+      }
+    },
+    {
+      "since_start_s": 11.582,
+      "mem_available_kib": 948008,
+      "swap_used_kib": 0,
+      "temperature_c": 51.608,
+      "load_average": "0.22 0.49 0.77 3/167 2601",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 694484
+        }
+      }
+    },
+    {
+      "since_start_s": 11.784,
+      "mem_available_kib": 944452,
+      "swap_used_kib": 0,
+      "temperature_c": 54.53,
+      "load_average": "0.22 0.49 0.77 5/167 2602",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 702824
+        }
+      }
+    },
+    {
+      "since_start_s": 11.99,
+      "mem_available_kib": 931824,
+      "swap_used_kib": 0,
+      "temperature_c": 55.017,
+      "load_average": "0.22 0.49 0.77 5/167 2604",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 12.192,
+      "mem_available_kib": 931824,
+      "swap_used_kib": 0,
+      "temperature_c": 55.504,
+      "load_average": "0.22 0.49 0.77 5/167 2605",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 12.398,
+      "mem_available_kib": 932688,
+      "swap_used_kib": 0,
+      "temperature_c": 55.991,
+      "load_average": "0.22 0.49 0.77 3/167 2606",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 12.6,
+      "mem_available_kib": 934372,
+      "swap_used_kib": 0,
+      "temperature_c": 55.504,
+      "load_average": "0.22 0.49 0.77 5/167 2607",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 12.803,
+      "mem_available_kib": 934372,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.22 0.49 0.77 2/167 2609",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 13.008,
+      "mem_available_kib": 934332,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.22 0.49 0.77 5/167 2610",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 710992
+        }
+      }
+    },
+    {
+      "since_start_s": 13.211,
+      "mem_available_kib": 934584,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.22 0.49 0.77 3/167 2611",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711056
+        }
+      }
+    },
+    {
+      "since_start_s": 13.426,
+      "mem_available_kib": 934984,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.22 0.49 0.77 8/168 2613",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29340
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711056
+        }
+      }
+    },
+    {
+      "since_start_s": 13.63,
+      "mem_available_kib": 935476,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.22 0.49 0.77 2/167 2614",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711056
+        }
+      }
+    },
+    {
+      "since_start_s": 13.833,
+      "mem_available_kib": 935412,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.22 0.49 0.77 5/167 2615",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711056
+        }
+      }
+    },
+    {
+      "since_start_s": 14.036,
+      "mem_available_kib": 935064,
+      "swap_used_kib": 0,
+      "temperature_c": 56.478,
+      "load_average": "0.22 0.49 0.77 5/167 2616",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711056
+        }
+      }
+    },
+    {
+      "since_start_s": 14.251,
+      "mem_available_kib": 934936,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.22 0.49 0.77 5/167 2618",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711056
+        }
+      }
+    },
+    {
+      "since_start_s": 14.459,
+      "mem_available_kib": 934840,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.22 0.49 0.77 5/167 2619",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711056
+        }
+      }
+    },
+    {
+      "since_start_s": 14.666,
+      "mem_available_kib": 934840,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "0.22 0.49 0.77 5/167 2620",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711056
+        }
+      }
+    },
+    {
+      "since_start_s": 14.869,
+      "mem_available_kib": 934840,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "0.22 0.49 0.77 6/167 2622",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711120
+        }
+      }
+    },
+    {
+      "since_start_s": 15.076,
+      "mem_available_kib": 934840,
+      "swap_used_kib": 0,
+      "temperature_c": 60.861,
+      "load_average": "0.22 0.49 0.77 5/167 2623",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711120
+        }
+      }
+    },
+    {
+      "since_start_s": 15.282,
+      "mem_available_kib": 935040,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "0.22 0.49 0.77 5/167 2624",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711120
+        }
+      }
+    },
+    {
+      "since_start_s": 15.484,
+      "mem_available_kib": 935300,
+      "swap_used_kib": 0,
+      "temperature_c": 61.835,
+      "load_average": "0.22 0.49 0.77 5/167 2625",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711120
+        }
+      }
+    },
+    {
+      "since_start_s": 15.688,
+      "mem_available_kib": 935248,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "0.22 0.49 0.77 5/167 2627",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711120
+        }
+      }
+    },
+    {
+      "since_start_s": 15.894,
+      "mem_available_kib": 935248,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "0.52 0.55 0.79 5/167 2628",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711120
+        }
+      }
+    },
+    {
+      "since_start_s": 16.098,
+      "mem_available_kib": 935248,
+      "swap_used_kib": 0,
+      "temperature_c": 60.861,
+      "load_average": "0.52 0.55 0.79 5/167 2629",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711120
+        }
+      }
+    },
+    {
+      "since_start_s": 16.3,
+      "mem_available_kib": 935248,
+      "swap_used_kib": 0,
+      "temperature_c": 62.322,
+      "load_average": "0.52 0.55 0.79 5/167 2630",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711120
+        }
+      }
+    },
+    {
+      "since_start_s": 16.504,
+      "mem_available_kib": 935372,
+      "swap_used_kib": 0,
+      "temperature_c": 61.348,
+      "load_average": "0.52 0.55 0.79 5/167 2632",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711184
+        }
+      }
+    },
+    {
+      "since_start_s": 16.71,
+      "mem_available_kib": 935372,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "0.52 0.55 0.79 2/167 2633",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711184
+        }
+      }
+    },
+    {
+      "since_start_s": 16.913,
+      "mem_available_kib": 935372,
+      "swap_used_kib": 0,
+      "temperature_c": 61.835,
+      "load_average": "0.52 0.55 0.79 5/167 2634",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711184
+        }
+      }
+    },
+    {
+      "since_start_s": 17.118,
+      "mem_available_kib": 935372,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "0.52 0.55 0.79 5/168 2636",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29340
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711184
+        }
+      }
+    },
+    {
+      "since_start_s": 17.32,
+      "mem_available_kib": 935672,
+      "swap_used_kib": 0,
+      "temperature_c": 62.322,
+      "load_average": "0.52 0.55 0.79 5/167 2637",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711184
+        }
+      }
+    },
+    {
+      "since_start_s": 17.526,
+      "mem_available_kib": 935496,
+      "swap_used_kib": 0,
+      "temperature_c": 62.322,
+      "load_average": "0.52 0.55 0.79 5/167 2638",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711184
+        }
+      }
+    },
+    {
+      "since_start_s": 17.728,
+      "mem_available_kib": 935444,
+      "swap_used_kib": 0,
+      "temperature_c": 62.322,
+      "load_average": "0.52 0.55 0.79 5/167 2639",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711184
+        }
+      }
+    },
+    {
+      "since_start_s": 17.934,
+      "mem_available_kib": 935452,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "0.52 0.55 0.79 2/167 2641",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 18.155,
+      "mem_available_kib": 935452,
+      "swap_used_kib": 0,
+      "temperature_c": 61.835,
+      "load_average": "0.52 0.55 0.79 2/167 2642",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 18.358,
+      "mem_available_kib": 935792,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "0.52 0.55 0.79 2/167 2643",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 18.56,
+      "mem_available_kib": 935792,
+      "swap_used_kib": 0,
+      "temperature_c": 61.348,
+      "load_average": "0.52 0.55 0.79 3/167 2644",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 18.784,
+      "mem_available_kib": 935792,
+      "swap_used_kib": 0,
+      "temperature_c": 61.348,
+      "load_average": "0.52 0.55 0.79 2/167 2646",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 19.003,
+      "mem_available_kib": 935792,
+      "swap_used_kib": 0,
+      "temperature_c": 60.861,
+      "load_average": "0.52 0.55 0.79 2/167 2647",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 19.227,
+      "mem_available_kib": 935792,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "0.52 0.55 0.79 2/167 2648",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 19.431,
+      "mem_available_kib": 935908,
+      "swap_used_kib": 0,
+      "temperature_c": 61.348,
+      "load_average": "0.52 0.55 0.79 5/168 2650",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 19.652,
+      "mem_available_kib": 936108,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "0.52 0.55 0.79 5/167 2651",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 19.866,
+      "mem_available_kib": 936160,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "0.52 0.55 0.79 5/167 2652",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 20.08,
+      "mem_available_kib": 936160,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "0.52 0.55 0.79 2/167 2653",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 20.296,
+      "mem_available_kib": 936160,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "0.52 0.55 0.79 6/167 2655",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29340
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 20.526,
+      "mem_available_kib": 936160,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "0.52 0.55 0.79 2/167 2656",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 20.731,
+      "mem_available_kib": 936160,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "0.88 0.62 0.81 3/167 2657",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29336
+        },
+        "2534": {
+          "name": "llama_main",
+          "rss_kib": 711244
+        }
+      }
+    },
+    {
+      "since_start_s": 20.959,
+      "mem_available_kib": 1630316,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "0.88 0.62 0.81 1/163 2658",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29376
+        }
+      }
+    },
+    {
+      "since_start_s": 21.161,
+      "mem_available_kib": 1618472,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.88 0.62 0.81 2/166 2662",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29348
+        },
+        "2661": {
+          "name": "python3",
+          "rss_kib": 12176
+        },
+        "2662": {
+          "name": "python3",
+          "rss_kib": 10816
+        }
+      }
+    },
+    {
+      "since_start_s": 21.365,
+      "mem_available_kib": 1607124,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "0.88 0.62 0.81 2/166 2662",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29348
+        },
+        "2661": {
+          "name": "python3",
+          "rss_kib": 12176
+        },
+        "2662": {
+          "name": "python3",
+          "rss_kib": 26776
+        }
+      }
+    },
+    {
+      "since_start_s": 21.568,
+      "mem_available_kib": 1577740,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.88 0.62 0.81 2/166 2663",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29348
+        },
+        "2661": {
+          "name": "python3",
+          "rss_kib": 12176
+        },
+        "2663": {
+          "name": "pillguard_deplo",
+          "rss_kib": 37040
+        }
+      }
+    },
+    {
+      "since_start_s": 21.775,
+      "mem_available_kib": 1448496,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.88 0.62 0.81 2/169 2666",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29348
+        },
+        "2661": {
+          "name": "python3",
+          "rss_kib": 12176
+        },
+        "2663": {
+          "name": "pillguard_deplo",
+          "rss_kib": 163932
+        }
+      }
+    },
+    {
+      "since_start_s": 21.984,
+      "mem_available_kib": 1492196,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "0.88 0.62 0.81 3/169 2666",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29348
+        },
+        "2661": {
+          "name": "python3",
+          "rss_kib": 12176
+        },
+        "2663": {
+          "name": "pillguard_deplo",
+          "rss_kib": 99480
+        }
+      }
+    },
+    {
+      "since_start_s": 22.192,
+      "mem_available_kib": 1583988,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "0.88 0.62 0.81 2/167 2670",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29416
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 6216
+        }
+      }
+    },
+    {
+      "since_start_s": 22.396,
+      "mem_available_kib": 1568964,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "0.88 0.62 0.81 2/169 2673",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 26252
+        }
+      }
+    },
+    {
+      "since_start_s": 22.599,
+      "mem_available_kib": 1536416,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.88 0.62 0.81 2/169 2674",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 75624
+        }
+      }
+    },
+    {
+      "since_start_s": 22.801,
+      "mem_available_kib": 1528816,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "0.88 0.62 0.81 2/169 2675",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 97976
+        }
+      }
+    },
+    {
+      "since_start_s": 23.004,
+      "mem_available_kib": 1514532,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.88 0.62 0.81 2/169 2677",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 95984
+        }
+      }
+    },
+    {
+      "since_start_s": 23.206,
+      "mem_available_kib": 1492032,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "0.88 0.62 0.81 2/169 2678",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 122952
+        }
+      }
+    },
+    {
+      "since_start_s": 23.409,
+      "mem_available_kib": 1493704,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "0.88 0.62 0.81 2/169 2679",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 127240
+        }
+      }
+    },
+    {
+      "since_start_s": 23.612,
+      "mem_available_kib": 1471952,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.88 0.62 0.81 2/169 2681",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 140700
+        }
+      }
+    },
+    {
+      "since_start_s": 23.814,
+      "mem_available_kib": 1462952,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.88 0.62 0.81 2/169 2682",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 153644
+        }
+      }
+    },
+    {
+      "since_start_s": 24.017,
+      "mem_available_kib": 1441252,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.88 0.62 0.81 2/169 2683",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 166204
+        }
+      }
+    },
+    {
+      "since_start_s": 24.22,
+      "mem_available_kib": 1439752,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.88 0.62 0.81 2/169 2685",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 188556
+        }
+      }
+    },
+    {
+      "since_start_s": 24.422,
+      "mem_available_kib": 1429140,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.88 0.62 0.81 2/169 2686",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 187368
+        }
+      }
+    },
+    {
+      "since_start_s": 24.625,
+      "mem_available_kib": 1412388,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.88 0.62 0.81 2/169 2687",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29780
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 214000
+        }
+      }
+    },
+    {
+      "since_start_s": 24.827,
+      "mem_available_kib": 1404788,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.88 0.62 0.81 3/169 2688",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 218548
+        }
+      }
+    },
+    {
+      "since_start_s": 25.031,
+      "mem_available_kib": 1383188,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.88 0.62 0.81 2/169 2690",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 231812
+        }
+      }
+    },
+    {
+      "since_start_s": 25.233,
+      "mem_available_kib": 1374088,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.88 0.62 0.81 2/169 2691",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 244956
+        }
+      }
+    },
+    {
+      "since_start_s": 25.436,
+      "mem_available_kib": 1369728,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.88 0.62 0.81 2/169 2692",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 249312
+        }
+      }
+    },
+    {
+      "since_start_s": 25.639,
+      "mem_available_kib": 1347748,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "0.88 0.62 0.81 2/169 2694",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 279652
+        }
+      }
+    },
+    {
+      "since_start_s": 25.841,
+      "mem_available_kib": 1337452,
+      "swap_used_kib": 0,
+      "temperature_c": 56.478,
+      "load_average": "0.89 0.63 0.81 2/169 2695",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 279896
+        }
+      }
+    },
+    {
+      "since_start_s": 26.044,
+      "mem_available_kib": 1320752,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.89 0.63 0.81 2/169 2696",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 299360
+        }
+      }
+    },
+    {
+      "since_start_s": 26.247,
+      "mem_available_kib": 1311552,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.89 0.63 0.81 2/169 2698",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 310000
+        }
+      }
+    },
+    {
+      "since_start_s": 26.45,
+      "mem_available_kib": 1303404,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.89 0.63 0.81 2/169 2699",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 322968
+        }
+      }
+    },
+    {
+      "since_start_s": 26.652,
+      "mem_available_kib": 1293552,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.89 0.63 0.81 2/169 2700",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 331244
+        }
+      }
+    },
+    {
+      "since_start_s": 26.856,
+      "mem_available_kib": 1277652,
+      "swap_used_kib": 0,
+      "temperature_c": 56.478,
+      "load_average": "0.89 0.63 0.81 2/169 2702",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 343900
+        }
+      }
+    },
+    {
+      "since_start_s": 27.059,
+      "mem_available_kib": 1255852,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.89 0.63 0.81 2/169 2703",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 370984
+        }
+      }
+    },
+    {
+      "since_start_s": 27.261,
+      "mem_available_kib": 1240152,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.89 0.63 0.81 2/169 2704",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 375020
+        }
+      }
+    },
+    {
+      "since_start_s": 27.464,
+      "mem_available_kib": 1236208,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.89 0.63 0.81 2/169 2705",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 388688
+        }
+      }
+    },
+    {
+      "since_start_s": 27.666,
+      "mem_available_kib": 1219356,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.89 0.63 0.81 2/169 2707",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 401384
+        }
+      }
+    },
+    {
+      "since_start_s": 27.869,
+      "mem_available_kib": 1204956,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.89 0.63 0.81 2/169 2708",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 414224
+        }
+      }
+    },
+    {
+      "since_start_s": 28.072,
+      "mem_available_kib": 1189256,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.89 0.63 0.81 2/169 2709",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 436516
+        }
+      }
+    },
+    {
+      "since_start_s": 28.274,
+      "mem_available_kib": 1182056,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.89 0.63 0.81 2/169 2711",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 434984
+        }
+      }
+    },
+    {
+      "since_start_s": 28.477,
+      "mem_available_kib": 1169784,
+      "swap_used_kib": 0,
+      "temperature_c": 56.478,
+      "load_average": "0.89 0.63 0.81 2/169 2712",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 462112
+        }
+      }
+    },
+    {
+      "since_start_s": 28.68,
+      "mem_available_kib": 1154184,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.89 0.63 0.81 2/169 2713",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 466472
+        }
+      }
+    },
+    {
+      "since_start_s": 28.882,
+      "mem_available_kib": 1146084,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.89 0.63 0.81 2/169 2715",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 479888
+        }
+      }
+    },
+    {
+      "since_start_s": 29.085,
+      "mem_available_kib": 1122884,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.89 0.63 0.81 2/169 2716",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 492844
+        }
+      }
+    },
+    {
+      "since_start_s": 29.287,
+      "mem_available_kib": 1118684,
+      "swap_used_kib": 0,
+      "temperature_c": 56.478,
+      "load_average": "0.89 0.63 0.81 2/169 2717",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 504816
+        }
+      }
+    },
+    {
+      "since_start_s": 29.491,
+      "mem_available_kib": 1105332,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.89 0.63 0.81 2/169 2719",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 527712
+        }
+      }
+    },
+    {
+      "since_start_s": 29.694,
+      "mem_available_kib": 1094932,
+      "swap_used_kib": 0,
+      "temperature_c": 56.478,
+      "load_average": "0.89 0.63 0.81 2/169 2720",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 527188
+        }
+      }
+    },
+    {
+      "since_start_s": 29.896,
+      "mem_available_kib": 1076632,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.89 0.63 0.81 2/169 2721",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 553308
+        }
+      }
+    },
+    {
+      "since_start_s": 30.099,
+      "mem_available_kib": 1069032,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.89 0.63 0.81 2/169 2723",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 557924
+        }
+      }
+    },
+    {
+      "since_start_s": 30.303,
+      "mem_available_kib": 946628,
+      "swap_used_kib": 0,
+      "temperature_c": 56.478,
+      "load_average": "0.89 0.63 0.81 2/169 2724",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 673672
+        }
+      }
+    },
+    {
+      "since_start_s": 30.506,
+      "mem_available_kib": 932548,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.89 0.63 0.81 2/169 2725",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 703424
+        }
+      }
+    },
+    {
+      "since_start_s": 30.709,
+      "mem_available_kib": 934848,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.90 0.63 0.81 2/169 2726",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 718016
+        }
+      }
+    },
+    {
+      "since_start_s": 30.911,
+      "mem_available_kib": 935404,
+      "swap_used_kib": 0,
+      "temperature_c": 56.478,
+      "load_average": "0.90 0.63 0.81 2/169 2728",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 732608
+        }
+      }
+    },
+    {
+      "since_start_s": 31.114,
+      "mem_available_kib": 935352,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.90 0.63 0.81 2/169 2729",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 747200
+        }
+      }
+    },
+    {
+      "since_start_s": 31.317,
+      "mem_available_kib": 935260,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.90 0.63 0.81 3/169 2730",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 761792
+        }
+      }
+    },
+    {
+      "since_start_s": 31.519,
+      "mem_available_kib": 936340,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.90 0.63 0.81 2/169 2732",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 776384
+        }
+      }
+    },
+    {
+      "since_start_s": 31.722,
+      "mem_available_kib": 936340,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "0.90 0.63 0.81 2/169 2733",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 790976
+        }
+      }
+    },
+    {
+      "since_start_s": 31.925,
+      "mem_available_kib": 936340,
+      "swap_used_kib": 0,
+      "temperature_c": 56.478,
+      "load_average": "0.90 0.63 0.81 2/169 2734",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 805504
+        }
+      }
+    },
+    {
+      "since_start_s": 32.127,
+      "mem_available_kib": 936340,
+      "swap_used_kib": 0,
+      "temperature_c": 56.965,
+      "load_average": "0.90 0.63 0.81 2/169 2736",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 818324
+        }
+      }
+    },
+    {
+      "since_start_s": 32.341,
+      "mem_available_kib": 934584,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "0.90 0.63 0.81 5/169 2737",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 702628
+        }
+      }
+    },
+    {
+      "since_start_s": 32.544,
+      "mem_available_kib": 920712,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.90 0.63 0.81 5/169 2738",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710792
+        }
+      }
+    },
+    {
+      "since_start_s": 32.748,
+      "mem_available_kib": 923024,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "0.90 0.63 0.81 5/169 2739",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710792
+        }
+      }
+    },
+    {
+      "since_start_s": 32.951,
+      "mem_available_kib": 923032,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "0.90 0.63 0.81 2/169 2741",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710792
+        }
+      }
+    },
+    {
+      "since_start_s": 33.158,
+      "mem_available_kib": 923064,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "0.90 0.63 0.81 5/169 2742",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710792
+        }
+      }
+    },
+    {
+      "since_start_s": 33.36,
+      "mem_available_kib": 923064,
+      "swap_used_kib": 0,
+      "temperature_c": 60.861,
+      "load_average": "0.90 0.63 0.81 5/169 2743",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710792
+        }
+      }
+    },
+    {
+      "since_start_s": 33.57,
+      "mem_available_kib": 922936,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "0.90 0.63 0.81 7/170 2745",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710796
+        }
+      }
+    },
+    {
+      "since_start_s": 33.775,
+      "mem_available_kib": 922840,
+      "swap_used_kib": 0,
+      "temperature_c": 60.861,
+      "load_average": "0.90 0.63 0.81 5/169 2746",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710860
+        }
+      }
+    },
+    {
+      "since_start_s": 33.977,
+      "mem_available_kib": 922840,
+      "swap_used_kib": 0,
+      "temperature_c": 60.861,
+      "load_average": "0.90 0.63 0.81 5/169 2747",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710860
+        }
+      }
+    },
+    {
+      "since_start_s": 34.181,
+      "mem_available_kib": 922840,
+      "swap_used_kib": 0,
+      "temperature_c": 61.348,
+      "load_average": "0.90 0.63 0.81 5/169 2748",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710860
+        }
+      }
+    },
+    {
+      "since_start_s": 34.386,
+      "mem_available_kib": 922848,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "0.90 0.63 0.81 4/169 2750",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710860
+        }
+      }
+    },
+    {
+      "since_start_s": 34.589,
+      "mem_available_kib": 922848,
+      "swap_used_kib": 0,
+      "temperature_c": 61.835,
+      "load_average": "0.90 0.63 0.81 5/169 2751",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710860
+        }
+      }
+    },
+    {
+      "since_start_s": 34.792,
+      "mem_available_kib": 922848,
+      "swap_used_kib": 0,
+      "temperature_c": 63.296,
+      "load_average": "0.90 0.63 0.81 2/169 2752",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710860
+        }
+      }
+    },
+    {
+      "since_start_s": 35.002,
+      "mem_available_kib": 922848,
+      "swap_used_kib": 0,
+      "temperature_c": 63.783,
+      "load_average": "0.90 0.63 0.81 5/169 2753",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710860
+        }
+      }
+    },
+    {
+      "since_start_s": 35.204,
+      "mem_available_kib": 922848,
+      "swap_used_kib": 0,
+      "temperature_c": 62.322,
+      "load_average": "0.90 0.63 0.81 2/169 2755",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710924
+        }
+      }
+    },
+    {
+      "since_start_s": 35.41,
+      "mem_available_kib": 922848,
+      "swap_used_kib": 0,
+      "temperature_c": 63.783,
+      "load_average": "0.90 0.63 0.81 2/169 2756",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710924
+        }
+      }
+    },
+    {
+      "since_start_s": 35.613,
+      "mem_available_kib": 922848,
+      "swap_used_kib": 0,
+      "temperature_c": 63.296,
+      "load_average": "0.90 0.63 0.81 5/169 2757",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710924
+        }
+      }
+    },
+    {
+      "since_start_s": 35.818,
+      "mem_available_kib": 922876,
+      "swap_used_kib": 0,
+      "temperature_c": 64.27,
+      "load_average": "1.15 0.69 0.83 5/169 2759",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710924
+        }
+      }
+    },
+    {
+      "since_start_s": 36.022,
+      "mem_available_kib": 922900,
+      "swap_used_kib": 0,
+      "temperature_c": 64.27,
+      "load_average": "1.15 0.69 0.83 5/169 2760",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710924
+        }
+      }
+    },
+    {
+      "since_start_s": 36.224,
+      "mem_available_kib": 922872,
+      "swap_used_kib": 0,
+      "temperature_c": 65.244,
+      "load_average": "1.15 0.69 0.83 5/169 2761",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710924
+        }
+      }
+    },
+    {
+      "since_start_s": 36.428,
+      "mem_available_kib": 922884,
+      "swap_used_kib": 0,
+      "temperature_c": 64.27,
+      "load_average": "1.15 0.69 0.83 5/169 2762",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710924
+        }
+      }
+    },
+    {
+      "since_start_s": 36.631,
+      "mem_available_kib": 922884,
+      "swap_used_kib": 0,
+      "temperature_c": 64.27,
+      "load_average": "1.15 0.69 0.83 5/169 2764",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 36.836,
+      "mem_available_kib": 922884,
+      "swap_used_kib": 0,
+      "temperature_c": 64.27,
+      "load_average": "1.15 0.69 0.83 5/169 2765",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 37.039,
+      "mem_available_kib": 922884,
+      "swap_used_kib": 0,
+      "temperature_c": 64.757,
+      "load_average": "1.15 0.69 0.83 2/169 2766",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 37.242,
+      "mem_available_kib": 921884,
+      "swap_used_kib": 0,
+      "temperature_c": 64.757,
+      "load_average": "1.15 0.69 0.83 5/171 2769",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 37.445,
+      "mem_available_kib": 924404,
+      "swap_used_kib": 0,
+      "temperature_c": 65.244,
+      "load_average": "1.15 0.69 0.83 4/173 2781",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 37.663,
+      "mem_available_kib": 925944,
+      "swap_used_kib": 0,
+      "temperature_c": 65.244,
+      "load_average": "1.15 0.69 0.83 5/169 2785",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 37.866,
+      "mem_available_kib": 925960,
+      "swap_used_kib": 0,
+      "temperature_c": 65.731,
+      "load_average": "1.15 0.69 0.83 2/169 2786",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 38.073,
+      "mem_available_kib": 925960,
+      "swap_used_kib": 0,
+      "temperature_c": 66.705,
+      "load_average": "1.15 0.69 0.83 6/169 2788",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 38.281,
+      "mem_available_kib": 925960,
+      "swap_used_kib": 0,
+      "temperature_c": 64.757,
+      "load_average": "1.15 0.69 0.83 5/169 2789",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 38.508,
+      "mem_available_kib": 927296,
+      "swap_used_kib": 0,
+      "temperature_c": 63.296,
+      "load_average": "1.15 0.69 0.83 5/169 2790",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 38.729,
+      "mem_available_kib": 927296,
+      "swap_used_kib": 0,
+      "temperature_c": 64.757,
+      "load_average": "1.15 0.69 0.83 3/169 2792",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 38.946,
+      "mem_available_kib": 927296,
+      "swap_used_kib": 0,
+      "temperature_c": 64.27,
+      "load_average": "1.15 0.69 0.83 2/169 2793",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 39.15,
+      "mem_available_kib": 927296,
+      "swap_used_kib": 0,
+      "temperature_c": 64.27,
+      "load_average": "1.15 0.69 0.83 2/169 2794",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 39.352,
+      "mem_available_kib": 928736,
+      "swap_used_kib": 0,
+      "temperature_c": 63.296,
+      "load_average": "1.15 0.69 0.83 2/169 2795",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 39.576,
+      "mem_available_kib": 928820,
+      "swap_used_kib": 0,
+      "temperature_c": 63.296,
+      "load_average": "1.15 0.69 0.83 3/170 2797",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 39.788,
+      "mem_available_kib": 928820,
+      "swap_used_kib": 0,
+      "temperature_c": 62.322,
+      "load_average": "1.15 0.69 0.83 2/169 2798",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 39.997,
+      "mem_available_kib": 928820,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "1.15 0.69 0.83 3/169 2799",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 40.21,
+      "mem_available_kib": 928820,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "1.15 0.69 0.83 2/169 2800",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 40.429,
+      "mem_available_kib": 930168,
+      "swap_used_kib": 0,
+      "temperature_c": 63.296,
+      "load_average": "1.15 0.69 0.83 2/169 2802",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 40.66,
+      "mem_available_kib": 930168,
+      "swap_used_kib": 0,
+      "temperature_c": 63.296,
+      "load_average": "1.15 0.69 0.83 2/169 2803",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 40.878,
+      "mem_available_kib": 930204,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "1.46 0.76 0.85 2/169 2804",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 711048
+        }
+      }
+    },
+    {
+      "since_start_s": 41.081,
+      "mem_available_kib": 975304,
+      "swap_used_kib": 0,
+      "temperature_c": 62.322,
+      "load_average": "1.46 0.76 0.85 2/169 2805",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29784
+        },
+        "2667": {
+          "name": "llama_main",
+          "rss_kib": 636360
+        }
+      }
+    },
+    {
+      "since_start_s": 41.284,
+      "mem_available_kib": 1621912,
+      "swap_used_kib": 0,
+      "temperature_c": 60.861,
+      "load_average": "1.46 0.76 0.85 2/167 2809",
+      "owned_process_rss": {
+        "2808": {
+          "name": "python3",
+          "rss_kib": 8520
+        },
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2807": {
+          "name": "python3",
+          "rss_kib": 12180
+        }
+      }
+    },
+    {
+      "since_start_s": 41.488,
+      "mem_available_kib": 1611884,
+      "swap_used_kib": 0,
+      "temperature_c": 61.348,
+      "load_average": "1.46 0.76 0.85 2/167 2809",
+      "owned_process_rss": {
+        "2808": {
+          "name": "python3",
+          "rss_kib": 25868
+        },
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2807": {
+          "name": "python3",
+          "rss_kib": 12180
+        }
+      }
+    },
+    {
+      "since_start_s": 41.691,
+      "mem_available_kib": 1596284,
+      "swap_used_kib": 0,
+      "temperature_c": 60.861,
+      "load_average": "1.46 0.76 0.85 2/167 2810",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2810": {
+          "name": "pillguard_deplo",
+          "rss_kib": 13408
+        },
+        "2807": {
+          "name": "python3",
+          "rss_kib": 12180
+        }
+      }
+    },
+    {
+      "since_start_s": 41.897,
+      "mem_available_kib": 1459692,
+      "swap_used_kib": 0,
+      "temperature_c": 61.348,
+      "load_average": "1.46 0.76 0.85 2/170 2813",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2810": {
+          "name": "pillguard_deplo",
+          "rss_kib": 140796
+        },
+        "2807": {
+          "name": "python3",
+          "rss_kib": 12180
+        }
+      }
+    },
+    {
+      "since_start_s": 42.105,
+      "mem_available_kib": 1490692,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "1.46 0.76 0.85 5/170 2813",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2810": {
+          "name": "pillguard_deplo",
+          "rss_kib": 99472
+        },
+        "2807": {
+          "name": "python3",
+          "rss_kib": 12180
+        }
+      }
+    },
+    {
+      "since_start_s": 42.313,
+      "mem_available_kib": 1589140,
+      "swap_used_kib": 0,
+      "temperature_c": 61.835,
+      "load_average": "1.46 0.76 0.85 2/166 2813",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2807": {
+          "name": "python3",
+          "rss_kib": 12248
+        }
+      }
+    },
+    {
+      "since_start_s": 42.517,
+      "mem_available_kib": 1579072,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "1.46 0.76 0.85 2/167 2819",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 26256
+        }
+      }
+    },
+    {
+      "since_start_s": 42.721,
+      "mem_available_kib": 1544672,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "1.46 0.76 0.85 2/167 2820",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 66752
+        }
+      }
+    },
+    {
+      "since_start_s": 42.924,
+      "mem_available_kib": 1536672,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.46 0.76 0.85 2/167 2821",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 95292
+        }
+      }
+    },
+    {
+      "since_start_s": 43.126,
+      "mem_available_kib": 1517924,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.46 0.76 0.85 2/167 2825",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 95448
+        }
+      }
+    },
+    {
+      "since_start_s": 43.329,
+      "mem_available_kib": 1512572,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.46 0.76 0.85 3/167 2827",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 116096
+        }
+      }
+    },
+    {
+      "since_start_s": 43.532,
+      "mem_available_kib": 1497820,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "1.46 0.76 0.85 2/167 2828",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 125132
+        }
+      }
+    },
+    {
+      "since_start_s": 43.735,
+      "mem_available_kib": 1476120,
+      "swap_used_kib": 0,
+      "temperature_c": 60.861,
+      "load_average": "1.46 0.76 0.85 2/167 2829",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 138208
+        }
+      }
+    },
+    {
+      "since_start_s": 43.938,
+      "mem_available_kib": 1465020,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.46 0.76 0.85 2/167 2831",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 151568
+        }
+      }
+    },
+    {
+      "since_start_s": 44.141,
+      "mem_available_kib": 1457620,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.46 0.76 0.85 2/167 2832",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 158680
+        }
+      }
+    },
+    {
+      "since_start_s": 44.343,
+      "mem_available_kib": 1441768,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "1.46 0.76 0.85 2/167 2833",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 186320
+        }
+      }
+    },
+    {
+      "since_start_s": 44.546,
+      "mem_available_kib": 1436556,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "1.46 0.76 0.85 2/167 2835",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 190356
+        }
+      }
+    },
+    {
+      "since_start_s": 44.748,
+      "mem_available_kib": 1414856,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.46 0.76 0.85 2/167 2836",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 204196
+        }
+      }
+    },
+    {
+      "since_start_s": 44.951,
+      "mem_available_kib": 1405856,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "1.46 0.76 0.85 2/167 2837",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 216888
+        }
+      }
+    },
+    {
+      "since_start_s": 45.153,
+      "mem_available_kib": 1384408,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "1.46 0.76 0.85 2/167 2839",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 229832
+        }
+      }
+    },
+    {
+      "since_start_s": 45.356,
+      "mem_available_kib": 1386800,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "1.46 0.76 0.85 2/167 2840",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 235496
+        }
+      }
+    },
+    {
+      "since_start_s": 45.559,
+      "mem_available_kib": 1371648,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.46 0.76 0.85 2/167 2841",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 251172
+        }
+      }
+    },
+    {
+      "since_start_s": 45.762,
+      "mem_available_kib": 1341472,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.42 0.77 0.85 2/167 2843",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 277992
+        }
+      }
+    },
+    {
+      "since_start_s": 45.964,
+      "mem_available_kib": 1341472,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "1.42 0.77 0.85 2/167 2844",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 282224
+        }
+      }
+    },
+    {
+      "since_start_s": 46.167,
+      "mem_available_kib": 1320024,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "1.42 0.77 0.85 2/167 2845",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 295960
+        }
+      }
+    },
+    {
+      "since_start_s": 46.369,
+      "mem_available_kib": 1312724,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.42 0.77 0.85 2/167 2846",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 308784
+        }
+      }
+    },
+    {
+      "since_start_s": 46.572,
+      "mem_available_kib": 1291596,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "1.42 0.77 0.85 2/167 2848",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 321692
+        }
+      }
+    },
+    {
+      "since_start_s": 46.774,
+      "mem_available_kib": 1290096,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "1.42 0.77 0.85 2/167 2849",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 344108
+        }
+      }
+    },
+    {
+      "since_start_s": 46.977,
+      "mem_available_kib": 1271596,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "1.42 0.77 0.85 2/167 2850",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 342800
+        }
+      }
+    },
+    {
+      "since_start_s": 47.179,
+      "mem_available_kib": 1258896,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "1.42 0.77 0.85 2/167 2852",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 369836
+        }
+      }
+    },
+    {
+      "since_start_s": 47.382,
+      "mem_available_kib": 1253776,
+      "swap_used_kib": 0,
+      "temperature_c": 60.374,
+      "load_average": "1.42 0.77 0.85 2/167 2853",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 374128
+        }
+      }
+    },
+    {
+      "since_start_s": 47.584,
+      "mem_available_kib": 1232176,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "1.42 0.77 0.85 2/167 2854",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 387728
+        }
+      }
+    },
+    {
+      "since_start_s": 47.787,
+      "mem_available_kib": 1223076,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "1.42 0.77 0.85 2/167 2856",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 400620
+        }
+      }
+    },
+    {
+      "since_start_s": 47.989,
+      "mem_available_kib": 1201476,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "1.42 0.77 0.85 2/167 2857",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 413328
+        }
+      }
+    },
+    {
+      "since_start_s": 48.192,
+      "mem_available_kib": 1199976,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "1.42 0.77 0.85 2/167 2858",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 435812
+        }
+      }
+    },
+    {
+      "since_start_s": 48.394,
+      "mem_available_kib": 1183832,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.42 0.77 0.85 3/168 2860",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 434452
+        }
+      }
+    },
+    {
+      "since_start_s": 48.598,
+      "mem_available_kib": 1176164,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "1.42 0.77 0.85 2/167 2861",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 461480
+        }
+      }
+    },
+    {
+      "since_start_s": 48.8,
+      "mem_available_kib": 1169064,
+      "swap_used_kib": 0,
+      "temperature_c": 59.4,
+      "load_average": "1.42 0.77 0.85 2/167 2862",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 465968
+        }
+      }
+    },
+    {
+      "since_start_s": 49.003,
+      "mem_available_kib": 1149264,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "1.42 0.77 0.85 2/167 2863",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 479380
+        }
+      }
+    },
+    {
+      "since_start_s": 49.205,
+      "mem_available_kib": 1139820,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "1.42 0.77 0.85 2/167 2865",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 492528
+        }
+      }
+    },
+    {
+      "since_start_s": 49.408,
+      "mem_available_kib": 1134888,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "1.42 0.77 0.85 2/167 2866",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 500612
+        }
+      }
+    },
+    {
+      "since_start_s": 49.611,
+      "mem_available_kib": 1119288,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "1.42 0.77 0.85 2/167 2867",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 527460
+        }
+      }
+    },
+    {
+      "since_start_s": 49.814,
+      "mem_available_kib": 1100212,
+      "swap_used_kib": 0,
+      "temperature_c": 58.913,
+      "load_average": "1.42 0.77 0.85 2/167 2869",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 527192
+        }
+      }
+    },
+    {
+      "since_start_s": 50.016,
+      "mem_available_kib": 1087512,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "1.42 0.77 0.85 2/167 2870",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 553184
+        }
+      }
+    },
+    {
+      "since_start_s": 50.219,
+      "mem_available_kib": 1079912,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "1.42 0.77 0.85 2/167 2871",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 557864
+        }
+      }
+    },
+    {
+      "since_start_s": 50.422,
+      "mem_available_kib": 961764,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "1.42 0.77 0.85 2/167 2873",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 672116
+        }
+      }
+    },
+    {
+      "since_start_s": 50.625,
+      "mem_available_kib": 937864,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "1.42 0.77 0.85 2/167 2874",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 703428
+        }
+      }
+    },
+    {
+      "since_start_s": 50.828,
+      "mem_available_kib": 937864,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "1.39 0.77 0.85 2/167 2875",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 718148
+        }
+      }
+    },
+    {
+      "since_start_s": 51.03,
+      "mem_available_kib": 930536,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "1.39 0.77 0.85 2/167 2877",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 732932
+        }
+      }
+    },
+    {
+      "since_start_s": 51.233,
+      "mem_available_kib": 929648,
+      "swap_used_kib": 0,
+      "temperature_c": 57.939,
+      "load_average": "1.39 0.77 0.85 2/167 2878",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 747652
+        }
+      }
+    },
+    {
+      "since_start_s": 51.436,
+      "mem_available_kib": 930384,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "1.39 0.77 0.85 2/167 2879",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 762372
+        }
+      }
+    },
+    {
+      "since_start_s": 51.638,
+      "mem_available_kib": 930384,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "1.39 0.77 0.85 2/167 2880",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 777156
+        }
+      }
+    },
+    {
+      "since_start_s": 51.841,
+      "mem_available_kib": 930636,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "1.39 0.77 0.85 2/167 2882",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 791876
+        }
+      }
+    },
+    {
+      "since_start_s": 52.043,
+      "mem_available_kib": 930636,
+      "swap_used_kib": 0,
+      "temperature_c": 57.452,
+      "load_average": "1.39 0.77 0.85 2/167 2883",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 806596
+        }
+      }
+    },
+    {
+      "since_start_s": 52.246,
+      "mem_available_kib": 934736,
+      "swap_used_kib": 0,
+      "temperature_c": 58.426,
+      "load_average": "1.39 0.77 0.85 2/167 2884",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 686252
+        }
+      }
+    },
+    {
+      "since_start_s": 52.448,
+      "mem_available_kib": 934132,
+      "swap_used_kib": 0,
+      "temperature_c": 59.887,
+      "load_average": "1.39 0.77 0.85 5/167 2886",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 702820
+        }
+      }
+    },
+    {
+      "since_start_s": 52.654,
+      "mem_available_kib": 918332,
+      "swap_used_kib": 0,
+      "temperature_c": 61.348,
+      "load_average": "1.39 0.77 0.85 5/167 2887",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 710984
+        }
+      }
+    },
+    {
+      "since_start_s": 52.857,
+      "mem_available_kib": 918176,
+      "swap_used_kib": 0,
+      "temperature_c": 62.322,
+      "load_average": "1.39 0.77 0.85 5/167 2888",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 710984
+        }
+      }
+    },
+    {
+      "since_start_s": 53.061,
+      "mem_available_kib": 918176,
+      "swap_used_kib": 0,
+      "temperature_c": 62.322,
+      "load_average": "1.39 0.77 0.85 5/167 2889",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 710984
+        }
+      }
+    },
+    {
+      "since_start_s": 53.265,
+      "mem_available_kib": 918404,
+      "swap_used_kib": 0,
+      "temperature_c": 62.322,
+      "load_average": "1.39 0.77 0.85 5/167 2891",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 710984
+        }
+      }
+    },
+    {
+      "since_start_s": 53.47,
+      "mem_available_kib": 918872,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "1.39 0.77 0.85 5/167 2892",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 710984
+        }
+      }
+    },
+    {
+      "since_start_s": 53.672,
+      "mem_available_kib": 918872,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "1.39 0.77 0.85 5/167 2893",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 710988
+        }
+      }
+    },
+    {
+      "since_start_s": 53.878,
+      "mem_available_kib": 918872,
+      "swap_used_kib": 0,
+      "temperature_c": 63.783,
+      "load_average": "1.39 0.77 0.85 2/167 2894",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711052
+        }
+      }
+    },
+    {
+      "since_start_s": 54.08,
+      "mem_available_kib": 918884,
+      "swap_used_kib": 0,
+      "temperature_c": 64.27,
+      "load_average": "1.39 0.77 0.85 5/167 2896",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711052
+        }
+      }
+    },
+    {
+      "since_start_s": 54.283,
+      "mem_available_kib": 918992,
+      "swap_used_kib": 0,
+      "temperature_c": 64.757,
+      "load_average": "1.39 0.77 0.85 2/167 2897",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711052
+        }
+      }
+    },
+    {
+      "since_start_s": 54.489,
+      "mem_available_kib": 918992,
+      "swap_used_kib": 0,
+      "temperature_c": 64.757,
+      "load_average": "1.39 0.77 0.85 5/167 2898",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711052
+        }
+      }
+    },
+    {
+      "since_start_s": 54.693,
+      "mem_available_kib": 919064,
+      "swap_used_kib": 0,
+      "temperature_c": 63.296,
+      "load_average": "1.39 0.77 0.85 2/167 2900",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711052
+        }
+      }
+    },
+    {
+      "since_start_s": 54.906,
+      "mem_available_kib": 919064,
+      "swap_used_kib": 0,
+      "temperature_c": 65.244,
+      "load_average": "1.39 0.77 0.85 5/167 2901",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711052
+        }
+      }
+    },
+    {
+      "since_start_s": 55.109,
+      "mem_available_kib": 919064,
+      "swap_used_kib": 0,
+      "temperature_c": 64.27,
+      "load_average": "1.39 0.77 0.85 2/167 2902",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711052
+        }
+      }
+    },
+    {
+      "since_start_s": 55.314,
+      "mem_available_kib": 919064,
+      "swap_used_kib": 0,
+      "temperature_c": 65.731,
+      "load_average": "1.39 0.77 0.85 5/167 2903",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711052
+        }
+      }
+    },
+    {
+      "since_start_s": 55.516,
+      "mem_available_kib": 919072,
+      "swap_used_kib": 0,
+      "temperature_c": 64.757,
+      "load_average": "1.39 0.77 0.85 2/167 2905",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711116
+        }
+      }
+    },
+    {
+      "since_start_s": 55.726,
+      "mem_available_kib": 920080,
+      "swap_used_kib": 0,
+      "temperature_c": 66.218,
+      "load_average": "1.60 0.82 0.87 5/167 2906",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711116
+        }
+      }
+    },
+    {
+      "since_start_s": 55.937,
+      "mem_available_kib": 920612,
+      "swap_used_kib": 0,
+      "temperature_c": 66.218,
+      "load_average": "1.60 0.82 0.87 5/167 2907",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711116
+        }
+      }
+    },
+    {
+      "since_start_s": 56.142,
+      "mem_available_kib": 920612,
+      "swap_used_kib": 0,
+      "temperature_c": 66.218,
+      "load_average": "1.60 0.82 0.87 5/167 2909",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711116
+        }
+      }
+    },
+    {
+      "since_start_s": 56.346,
+      "mem_available_kib": 920388,
+      "swap_used_kib": 0,
+      "temperature_c": 65.731,
+      "load_average": "1.60 0.82 0.87 5/167 2910",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711116
+        }
+      }
+    },
+    {
+      "since_start_s": 56.555,
+      "mem_available_kib": 920388,
+      "swap_used_kib": 0,
+      "temperature_c": 66.705,
+      "load_average": "1.60 0.82 0.87 5/167 2911",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711116
+        }
+      }
+    },
+    {
+      "since_start_s": 56.762,
+      "mem_available_kib": 920616,
+      "swap_used_kib": 0,
+      "temperature_c": 66.705,
+      "load_average": "1.60 0.82 0.87 6/167 2912",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711116
+        }
+      }
+    },
+    {
+      "since_start_s": 56.97,
+      "mem_available_kib": 920816,
+      "swap_used_kib": 0,
+      "temperature_c": 66.705,
+      "load_average": "1.60 0.82 0.87 5/167 2914",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711116
+        }
+      }
+    },
+    {
+      "since_start_s": 57.178,
+      "mem_available_kib": 920892,
+      "swap_used_kib": 0,
+      "temperature_c": 67.679,
+      "load_average": "1.60 0.82 0.87 5/167 2915",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711180
+        }
+      }
+    },
+    {
+      "since_start_s": 57.381,
+      "mem_available_kib": 922392,
+      "swap_used_kib": 0,
+      "temperature_c": 67.192,
+      "load_average": "1.60 0.82 0.87 5/167 2916",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711180
+        }
+      }
+    },
+    {
+      "since_start_s": 57.584,
+      "mem_available_kib": 922704,
+      "swap_used_kib": 0,
+      "temperature_c": 67.679,
+      "load_average": "1.60 0.82 0.87 5/167 2918",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711180
+        }
+      }
+    },
+    {
+      "since_start_s": 57.79,
+      "mem_available_kib": 922704,
+      "swap_used_kib": 0,
+      "temperature_c": 68.653,
+      "load_average": "1.60 0.82 0.87 4/167 2919",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711180
+        }
+      }
+    },
+    {
+      "since_start_s": 57.993,
+      "mem_available_kib": 922732,
+      "swap_used_kib": 0,
+      "temperature_c": 68.166,
+      "load_average": "1.60 0.82 0.87 5/167 2920",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711180
+        }
+      }
+    },
+    {
+      "since_start_s": 58.196,
+      "mem_available_kib": 922732,
+      "swap_used_kib": 0,
+      "temperature_c": 69.14,
+      "load_average": "1.60 0.82 0.87 5/167 2921",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711180
+        }
+      }
+    },
+    {
+      "since_start_s": 58.401,
+      "mem_available_kib": 924432,
+      "swap_used_kib": 0,
+      "temperature_c": 69.14,
+      "load_average": "1.60 0.82 0.87 5/167 2923",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711180
+        }
+      }
+    },
+    {
+      "since_start_s": 58.606,
+      "mem_available_kib": 924304,
+      "swap_used_kib": 0,
+      "temperature_c": 68.653,
+      "load_average": "1.60 0.82 0.87 2/167 2924",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711180
+        }
+      }
+    },
+    {
+      "since_start_s": 58.826,
+      "mem_available_kib": 924288,
+      "swap_used_kib": 0,
+      "temperature_c": 67.192,
+      "load_average": "1.60 0.82 0.87 3/167 2925",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 59.051,
+      "mem_available_kib": 924088,
+      "swap_used_kib": 0,
+      "temperature_c": 67.192,
+      "load_average": "1.60 0.82 0.87 5/167 2927",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 59.27,
+      "mem_available_kib": 924088,
+      "swap_used_kib": 0,
+      "temperature_c": 66.705,
+      "load_average": "1.60 0.82 0.87 5/167 2928",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 59.485,
+      "mem_available_kib": 925572,
+      "swap_used_kib": 0,
+      "temperature_c": 66.218,
+      "load_average": "1.60 0.82 0.87 2/167 2929",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 59.709,
+      "mem_available_kib": 925800,
+      "swap_used_kib": 0,
+      "temperature_c": 65.731,
+      "load_average": "1.60 0.82 0.87 4/168 2931",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 59.939,
+      "mem_available_kib": 925800,
+      "swap_used_kib": 0,
+      "temperature_c": 65.731,
+      "load_average": "1.60 0.82 0.87 2/167 2932",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 60.155,
+      "mem_available_kib": 925548,
+      "swap_used_kib": 0,
+      "temperature_c": 65.731,
+      "load_average": "1.60 0.82 0.87 2/167 2933",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 60.374,
+      "mem_available_kib": 926912,
+      "swap_used_kib": 0,
+      "temperature_c": 65.244,
+      "load_average": "1.60 0.82 0.87 3/167 2934",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 60.596,
+      "mem_available_kib": 926912,
+      "swap_used_kib": 0,
+      "temperature_c": 65.731,
+      "load_average": "1.60 0.82 0.87 6/168 2936",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29792
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 60.817,
+      "mem_available_kib": 926912,
+      "swap_used_kib": 0,
+      "temperature_c": 64.757,
+      "load_average": "1.79 0.88 0.89 3/167 2937",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 61.047,
+      "mem_available_kib": 926912,
+      "swap_used_kib": 0,
+      "temperature_c": 65.244,
+      "load_average": "1.79 0.88 0.89 2/167 2938",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 61.27,
+      "mem_available_kib": 926912,
+      "swap_used_kib": 0,
+      "temperature_c": 65.731,
+      "load_average": "1.79 0.88 0.89 2/167 2939",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 61.495,
+      "mem_available_kib": 929108,
+      "swap_used_kib": 0,
+      "temperature_c": 64.27,
+      "load_average": "1.79 0.88 0.89 2/167 2941",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29788
+        },
+        "2815": {
+          "name": "llama_main",
+          "rss_kib": 711240
+        }
+      }
+    },
+    {
+      "since_start_s": 61.701,
+      "mem_available_kib": 1624880,
+      "swap_used_kib": 0,
+      "temperature_c": 63.783,
+      "load_average": "1.79 0.88 0.89 1/163 2942",
+      "owned_process_rss": {
+        "2522": {
+          "name": "python3",
+          "rss_kib": 29792
+        }
+      }
+    },
+    {
+      "since_start_s": 61.903,
+      "mem_available_kib": 1638496,
+      "swap_used_kib": 0,
+      "temperature_c": 62.809,
+      "load_average": "1.79 0.88 0.89 1/162 2944",
+      "owned_process_rss": {}
+    }
+  ]
+}

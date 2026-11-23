@@ -1,0 +1,23 @@
+test_injection_and_verdict_grammar (test_release.AdvisoryChecks.test_injection_and_verdict_grammar) ... ok
+test_native_timeout_removes_child_process_group (test_release.AdvisoryChecks.test_native_timeout_removes_child_process_group) ... ok
+test_prompt_note_limit_and_length (test_release.AdvisoryChecks.test_prompt_note_limit_and_length) ... ok
+test_reply_validation_and_rule_fallback (test_release.AdvisoryChecks.test_reply_validation_and_rule_fallback) ... ok
+test_rule_timeout_fallback_does_not_mutate_verdict (test_release.AdvisoryChecks.test_rule_timeout_fallback_does_not_mutate_verdict) ... ok
+test_shift_note_rejected_over_limit (test_release.AdvisoryChecks.test_shift_note_rejected_over_limit) ... ok
+test_vision_edges_and_malformed_output (test_release.AdvisoryChecks.test_vision_edges_and_malformed_output) ... ok
+test_advisory_failures_do_not_touch_verdict_fields (test_release.ReleaseSmoke.test_advisory_failures_do_not_touch_verdict_fields) ... ok
+test_upload_store_export (test_release.ReleaseSmoke.test_upload_store_export) ... ok
+test_interruption_exception_admission_and_full_day_stats (test_release.WorkerRecovery.test_interruption_exception_admission_and_full_day_stats) ... ERROR:root:Advisory computation failed for 267897836cbd411492e72b952dddf5c0
+Traceback (most recent call last):
+  File "/mnt/c/Users/bpris/PillGuard_Phase1_RC/app/app.py", line 123, in update_advisory
+    fields = engine.advisory(decision, record["probability_defective"], last10, last3,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/bpris/PillGuard_Phase1_RC/tests/test_release.py", line 258, in advisory
+    raise RuntimeError("simulated advisory failure")
+RuntimeError: simulated advisory failure
+ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 3.874s
+
+OK

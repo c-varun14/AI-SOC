@@ -53,12 +53,15 @@ CHECK = """
     assert(innerWidth<=850,'mobile width');
     await until(()=>$('today').textContent==='67','full-day counts');
     assert($('device').textContent.includes('Network interface up'),'interface label');
-    const file=new File([Uint8Array.of(137,80,78,71,13,10,26,10)],'upload.png',{type:'image/png'});
+    // A real one-pixel PNG; Chrome must decode it for the preview.
+    const png='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+W7ZsAAAAASUVORK5CYII=';
+    const file=new File([Uint8Array.from(atob(png),byte=>byte.charCodeAt(0))],
+      'upload.png',{type:'image/png'});
     const transfer=new DataTransfer();
     transfer.items.add(file);
     $('imagefile').files=transfer.files;
     $('imagefile').dispatchEvent(new Event('change'));
-    await until(()=>$('preview').getAttribute('src'),'image selection');
+    await until(()=>$('preview').naturalWidth===1,'decoded image preview');
     assert($('inspectBtn').disabled,'operator confirmation required');
     $('pillConfirmed').click();
     const first=$('inspectBtn').onclick();

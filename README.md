@@ -12,7 +12,7 @@ Indian regulators flag tablets as “not of standard quality” for visible prob
 4. The inspection is stored in SQLite and is available in history and JSON export.
 5. A background ExecuTorch Llama 3.2 1B Q4 worker produces a non-authoritative advisory after the verdict.
 
-## Measured results on Raspberry Pi 4
+## Archived Raspberry Pi 4 measurements
 
 | Measurement | Result | Evidence |
 |---|---:|---|
@@ -23,18 +23,14 @@ Indian regulators flag tablets as “not of standard quality” for visible prob
 | Legacy sequential inspection | optimized: 22.1–22.9 s; baseline: 28.3–31.1 s | [Pi offline uploads](evidence/pi-offline-uploads.log) |
 | Idle temperature / throttling | 43.8 °C / none observed | [Pi verification](evidence/pi/pi_verification_2026-11-23.txt) |
 | Offline acceptance | PASS and FAIL uploads, persistence and export with networking removed | [Offline acceptance](evidence/pi-offline-uploads.log) |
-| Verdict-first quick-QC response (isolated prototype) | ~1.2 s; current release-path measurement **[to measure 24 Nov]** | [Prototype log](evidence/isolated-async-reference.log) |
-| Llama approved-check selection score on 12 scenarios | **[to measure 24 Nov]** | Evaluation set and scoring are in progress on `llama-check` |
-| INT8 vs FP32 and 1→4 thread sweep | **[to measure 24 Nov]** | Team measurement in progress |
-| Defect severity from measured area | **[to measure 24 Nov]** | Team measurement in progress |
 
 The test split has a flagged possible same-source photograph overlap; see [dataset notes](docs/DATASET.md). Treat its score as provisional.
 
-## What Llama does and does not do
+## Release candidate
 
-Llama never sets PASS/FAIL or chooses the required action. Deterministic QC logic sets both from the vision output, and the verdict is returned before Llama starts.
+The service saves the deterministic vision and QC verdict and returns it without waiting for its advisory. An answer-prefix prompt requests one approved check. The parser separates the exact prompt echo, generated answer and observer metrics. FAIL permits checks 2–5 and always routes the tablet to quarantine. The dashboard labels local Llama and rule fallback separately and retains raw generation in technical details. A single native execution lock protects the 2 GB Pi. A new inspection can wait for an active advisory.
 
-After each verdict, Llama 3.2 1B reads the result, the FAIL count in the last 10 inspections and the operator's free-text shift note (for example "changed punch set at 11:40"), and picks one of five approved QC checks. A reply that is not one of those numbers is discarded and a rule baseline picks instead; the UI says which one chose. The rule baseline ignores the shift note, so the 12 seeded scenarios in `eval/` measure whether reading the note adds anything.
+See the [release handoff](docs/PHASE1-RELEASE.md), [advisory experiments](docs/EXPERIMENTS.md), and [Pi and automated evidence](evidence/phase1-rc/).
 
 ## Quick start
 
@@ -58,7 +54,7 @@ See [setup and reproducibility](docs/SETUP.md). Real ARM inference needs the mat
 
 ## Limitations
 
-PillGuard is a binary image classifier for visible defects; it does not identify defect subtype. The public dataset may contain source overlap between splits. Current acceptance uses image uploads rather than a fixed camera rig. Severity estimation is pending. The displayed probability is uncalibrated, and the system is a screening aid rather than pharmaceutical release authority.
+PillGuard is a binary image classifier for visible defects; it does not identify defect subtype. The public dataset may contain source overlap between splits. A fixed camera rig, validated severity estimation and an INT8/thread sweep remain future work. The displayed probability is uncalibrated, and the system is a screening aid rather than pharmaceutical release authority.
 
 ## Phase 2 plan
 

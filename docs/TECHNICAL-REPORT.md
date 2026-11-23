@@ -14,7 +14,7 @@ The inspection record is stored in SQLite and exposed through history and JSON e
 
 The vision model is exported as a float32 forward graph and deployed in the AArch64 ExecuTorch 1.6.0 runtime with XNNPACK. The Pi verification log records 315 ms mean vision forward latency over the 200-image test set. A wrapper parity log records identical printed probabilities and decisions between the tested wrappers.
 
-Llama 3.2 1B Instruct is exported for ExecuTorch with 8da4w weight quantization, group size 128, 4-bit embedding quantization with groups of 32, float32 override, KV cache, and XNNPACK lowering. The runtime uses four CPU threads. One logged generation measured 11.28 tokens/s prefill and 1.74 tokens/s decode; model loading took about 17 seconds and peak child RSS was about about 800 MiB (818,188 KiB). These are process-level measurements on the 2 GB Pi, not a total application memory guarantee.
+Llama 3.2 1B Instruct is exported for ExecuTorch with 8da4w weight quantization, group size 128, 4-bit embedding quantization with groups of 32, float32 override, KV cache, and XNNPACK lowering. The runtime uses four CPU threads. One logged generation measured 11.28 tokens/s prefill and 1.74 tokens/s decode; model loading took about 17 seconds and peak child RSS was about 800 MiB (818,188 KiB). These are process-level measurements on the 2 GB Pi, not a total application memory guarantee.
 
 The standalone runner was cross-compiled for AArch64 Cortex-A72 using Arm GNU `aarch64-none-linux-gnu` compilers and the toolchain-provided Linux sysroot. `ldd` on the Pi confirms runtime shared-library resolution against the deployed ExecuTorch environment and Pi system libraries; the tested system reports glibc 2.41 ([Pi dependency inventory](../evidence/rollback/pi-checkpoint.log)). The Llama runner uses four CPU threads, and export used `OMP_NUM_THREADS=2`. Build configuration and artifact hashes are recorded in [the runner configuration log](../evidence/pillguard-release-runner-config.log), [cross-build recipe](../models/llama-build/README.md), and [Pi manifest](../evidence/pi-sha256.txt). The exported model and runner use the original tokenizer. The Pi idle check recorded 43.8 °C and no throttling.
 
@@ -30,22 +30,22 @@ The standalone runner was cross-compiled for AArch64 Cortex-A72 using Arm GNU `a
 | Legacy sequential inspection | optimized: 22.1–22.9 s; baseline: 28.3–31.1 s | [Pi offline uploads](../evidence/pi-offline-uploads.log) |
 | Idle temperature / throttling | 43.8 °C / none observed | [Pi verification](../evidence/pi/pi_verification_2026-11-23.txt) |
 | Offline acceptance | PASS and FAIL uploads, persistence and export with networking removed | [Offline acceptance](../evidence/pi-offline-uploads.log) |
-| Verdict-first quick-QC response (isolated prototype) | ~1.2 s; current release-path measurement **[to measure 24 Nov]** | [Prototype log](../evidence/isolated-async-reference.log) |
-| Llama approved-check selection score on 12 scenarios | **[to measure 24 Nov]** | `llama-check` evaluation in progress |
-| INT8 vs FP32 and 1→4 thread sweep | **[to measure 24 Nov]** | Team measurement in progress |
-| Defect severity from measured area | **[to measure 24 Nov]** | Team measurement in progress |
 
 The test confusion matrix is TP=82, FN=18, FP=16, TN=84. Dataset audit notes identify a possible same-source image crossing train/test; the reported test metrics are therefore provisional. Offline acceptance removed networking and verified uploads, stored records and export behavior. The old sequential app path takes 22.1–22.9 seconds in the optimized run and 28.3–31.1 seconds in the baseline run because each request waits for Llama startup and generation.
+
+## Current release candidate on the Pi
+
+Three consecutive inspections completed on ARM64 with only loopback in the process namespace. First-service and warm idle HTTP verdicts were 1.227 s and 1.187 s. The next request waited 19.999 s while the prior Llama process used the sole native execution slot. Vision forward stayed within 324.311–327.111 ms. Llama runner wall time ranged from 18.966 to 19.367 s. Two advisories were accepted and one used safe fallback. Sampled available memory stayed above 896 MiB. No swap use increase or OOM event was observed. This small run does not establish sustained throughput. [Pi trace and manual checklist](PHASE1-RELEASE.md)
 
 ## Llama role and evaluation method
 
 The Llama model never sets the screening verdict or required action. The thresholded vision result and deterministic rule select PASS/standard QC review or FAIL/quarantine. Llama receives text context and returns a constrained, non-authoritative advisory that is stored separately from the decision.
 
-Parallel work on `llama-check` uses recent FAIL trends and an operator shift note to select one of five approved QC checks. A rule-based fallback handles unsupported or failed model output. The planned 12-scenario evaluation compares selected checks against a rule baseline; its score remains **[to measure 24 Nov]**. This is an advisory evaluation, not a classifier metric.
+The RC evaluates the answer-prefix prompt against 12 development and four additional held-out scenarios using the same grammar in production and evaluation. Its data and limitations are reported in [experiments](EXPERIMENTS.md). The controlled Pi end-to-end run and serialized-inference trade-off are in the [release handoff](PHASE1-RELEASE.md).
 
 ## Limitations
 
-The classifier distinguishes only normal from defective and does not label defect subtype. The public dataset may contain source overlap, so independent performance remains to be measured. Acceptance used uploads, not a fixed camera jig with controlled exposure. Severity and area measurement are not yet validated. Probabilities are uncalibrated. PASS is a screening result and never authorizes dispensing. The legacy sequential timing reflects the earlier synchronous path; verdict-first work has a separate prototype measurement and requires a release-path measurement.
+The classifier distinguishes only normal from defective and does not label defect subtype. The public dataset may contain source overlap, so independent performance remains to be measured. Acceptance used uploads, not a fixed camera jig with controlled exposure. Severity and area measurement are not yet validated. Probabilities are uncalibrated. PASS is a screening result and never authorizes dispensing. The legacy sequential timing reflects the earlier synchronous path; the RC separately measures idle and contended verdict latency. INT8, thread sweeps and severity measurement remain future work.
 
 ## Phase 2 plan
 

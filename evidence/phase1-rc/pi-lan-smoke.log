@@ -1,0 +1,2 @@
+PASS: dashboard and system endpoint through Pi LAN proxy at 10.188.40.215:18776
+Proxy exit=143; service exit=0

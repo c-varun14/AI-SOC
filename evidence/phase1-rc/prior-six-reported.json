@@ -1,0 +1,57 @@
+{
+  "provenance": "Team-reported prior Pi review measurements at 6275b2e, distinct from the hypothetical evaluation scenarios.",
+  "cases": [
+    {
+      "verdict": "PASS",
+      "probability_defective": 0.0153304,
+      "verdict_s": 2.966,
+      "llama_s": 24.953,
+      "raw_generation": "The correct answers",
+      "accepted": false
+    },
+    {
+      "verdict": "PASS",
+      "probability_defective": 0.0395949,
+      "verdict_s": 1.418,
+      "llama_s": 17.043,
+      "raw_generation": "The correct answers",
+      "accepted": false
+    },
+    {
+      "verdict": "FAIL",
+      "probability_defective": 0.814052,
+      "verdict_s": 2.816,
+      "llama_s": 17.043,
+      "raw_generation": "Here are the",
+      "accepted": false
+    },
+    {
+      "verdict": "FAIL",
+      "probability_defective": 0.814052,
+      "verdict_s": 1.227,
+      "llama_s": 17.297,
+      "raw_generation": "1. Continue",
+      "accepted": true
+    },
+    {
+      "verdict": "PASS",
+      "probability_defective": 0.101162,
+      "verdict_s": 1.429,
+      "llama_s": 17.06,
+      "raw_generation": "The correct answer",
+      "accepted": false
+    },
+    {
+      "verdict": "FAIL",
+      "probability_defective": 0.814052,
+      "verdict_s": 1.266,
+      "llama_s": 17.032,
+      "raw_generation": "The correct answers",
+      "accepted": false
+    }
+  ],
+  "accepted": 1,
+  "fallback": 5,
+  "safe_and_accepted": 0,
+  "verdict_under_two_seconds": 4
+}

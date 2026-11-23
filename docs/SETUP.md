@@ -14,11 +14,15 @@ python -m unittest discover -s tests -v
 python evidence/dataset/evaluate.py evidence/dataset/*predictions.csv
 ```
 
-The HTTP test creates synthetic images and runs the shipped Pillow/NumPy preprocessor. Its two native subprocesses are controlled stand-ins. It checks the preserved prompt, PASS and FAIL QC decisions, rejection of unsupported advisory output, and SQLite export. The metrics command recomputes the archived dataset scores from saved predictions. These checks establish code and evidence reproducibility. Real inference evidence is independent of the stand-ins.
+The automated suite uses controlled native stand-ins for its HTTP inference tests. It covers advisory safety, persistence and failure handling. The optional Chrome browser test uses simulated API responses and exercises the shipped UI at mobile width. Run `python tests/browser_check.py /path/to/check.html` and open the generated local HTML at a viewport width of 850 px or less. The body has `data-browser-check="PASS"` on success. Record a fresh run in an isolated browser profile.
+
+Score the deterministic rules with `python eval/score_llama.py --out /tmp/llama-baseline.json`. To evaluate actual Llama output on the Pi, also pass `--llama-runner`, `--model` and `--tokenizer`. The evaluator uses the production parser and writes machine-readable evidence after each case.
 
 A WSL native vision build can be configured with an x86-64 ExecuTorch 1.6.0 CPU wheel supplying the CMake SDK, CMake 3.28+ and a C++17 compiler. Set `ET_CMAKE_DIR` to the folder containing `executorch-config.cmake`, typically `<venv>/lib/python3.12/site-packages/executorch/lib/cmake/executorch`. Run the CMake commands below using the WSL wheel. ARM64 runners require an ARM64 system or explicit cross-compilation. Existing logs show real ARM64 runs. A fresh installation of the complete ARM64 SDK and hardware test are outside this WSL review.
 
 ## Raspberry Pi deployment
+
+For the existing team Pi and runtime, follow the exact [isolated RC launch and rollback commands](PHASE1-RELEASE.md). The generic build instructions below are for a fresh device.
 
 The measured device used 64-bit Raspberry Pi OS based on Debian 13, Python 3.13 with Pillow and NumPy, an ExecuTorch 1.6.0 AArch64 vision SDK, and a Cortex-A72 Llama runner. For a separate evaluation instance, use a fresh checkout, data directory and loopback port. The matching model, tokenizer and runtime artifacts are identified in [the Pi manifest](../evidence/pi-sha256.txt).
 

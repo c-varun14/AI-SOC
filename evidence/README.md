@@ -8,3 +8,7 @@
 - [Pi runtime SHA-256 records](pi-sha256.txt) and [optimized executable and pipeline checksum](verified-optimized.sha256) identify the historical artifacts.
 - [Cortex-A72 runner log](pi-q4-16-tokens.log), [export log](llama-export.log) and [build configuration](pillguard-release-runner-config.log) document real Llama inference and provenance.
 - [Dataset audit](dataset/) contains stored predictions, audit material and metric code. Raw dataset media and model weights are excluded.
+
+## Phase 1 release candidate
+
+[RC release handoff](../docs/PHASE1-RELEASE.md) links the native Pi smoke run, advisory scenarios, WSL tests, mobile-width simulation and release limitations. The archived walkthrough remains reference footage.

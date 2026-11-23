@@ -1,0 +1,350 @@
+{
+  "summary": {
+    "development": {
+      "cases": 12,
+      "native_runs": 0,
+      "baseline_agreement": 7,
+      "accepted": null,
+      "fallback": null,
+      "accepted_expected_agreement": null,
+      "displayed_expected_agreement": null,
+      "consistent_displayed": null
+    },
+    "held_out": {
+      "cases": 4,
+      "native_runs": 0,
+      "baseline_agreement": 1,
+      "accepted": null,
+      "fallback": null,
+      "accepted_expected_agreement": null,
+      "displayed_expected_agreement": null,
+      "consistent_displayed": null
+    }
+  },
+  "rows": [
+    {
+      "name": "stable-pass",
+      "decision": "PASS",
+      "probability": 0.08,
+      "history": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "",
+      "expected_check_id": 1,
+      "reason": "Stable pass history has no emerging pattern.",
+      "cohort": "development",
+      "baseline_check_id": 1
+    },
+    {
+      "name": "single-fail",
+      "decision": "FAIL",
+      "probability": 0.78,
+      "history": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "",
+      "expected_check_id": 2,
+      "reason": "A single new failure should be manually confirmed.",
+      "cohort": "development",
+      "baseline_check_id": 2
+    },
+    {
+      "name": "punch-change",
+      "decision": "FAIL",
+      "probability": 0.72,
+      "history": [
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "changed punch set at 11:40",
+      "expected_check_id": 3,
+      "reason": "Recent tooling change aligns with a rising failure trend.",
+      "cohort": "development",
+      "baseline_check_id": 5
+    },
+    {
+      "name": "new-granulate",
+      "decision": "FAIL",
+      "probability": 0.68,
+      "history": [
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "new granulate lot G-23",
+      "expected_check_id": 4,
+      "reason": "A new feed lot is a plausible common cause.",
+      "cohort": "development",
+      "baseline_check_id": 5
+    },
+    {
+      "name": "humidity",
+      "decision": "FAIL",
+      "probability": 0.66,
+      "history": [
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "humidity high",
+      "expected_check_id": 4,
+      "reason": "High humidity can affect the granulate or feed.",
+      "cohort": "development",
+      "baseline_check_id": 5
+    },
+    {
+      "name": "lamp-replaced",
+      "decision": "FAIL",
+      "probability": 0.61,
+      "history": [
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "lamp replaced",
+      "expected_check_id": 5,
+      "reason": "Recent camera lighting work merits a reference check.",
+      "cohort": "development",
+      "baseline_check_id": 5
+    },
+    {
+      "name": "camera-moved",
+      "decision": "FAIL",
+      "probability": 0.59,
+      "history": [
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "camera moved",
+      "expected_check_id": 5,
+      "reason": "Camera movement can undermine image reliability.",
+      "cohort": "development",
+      "baseline_check_id": 5
+    },
+    {
+      "name": "tea-break",
+      "decision": "PASS",
+      "probability": 0.12,
+      "history": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "tea break",
+      "expected_check_id": 1,
+      "reason": "Irrelevant note and stable passing history.",
+      "cohort": "development",
+      "baseline_check_id": 1
+    },
+    {
+      "name": "handover",
+      "decision": "FAIL",
+      "probability": 0.71,
+      "history": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "shift handover",
+      "expected_check_id": 2,
+      "reason": "Handover is irrelevant; confirm this isolated defect.",
+      "cohort": "development",
+      "baseline_check_id": 2
+    },
+    {
+      "name": "stable-pass-note",
+      "decision": "PASS",
+      "probability": 0.09,
+      "history": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "routine cleanup completed",
+      "expected_check_id": 1,
+      "reason": "Routine note does not alter the stable pass pattern.",
+      "cohort": "development",
+      "baseline_check_id": 1
+    },
+    {
+      "name": "rising-tooling",
+      "decision": "FAIL",
+      "probability": 0.74,
+      "history": [
+        "FAIL",
+        "FAIL",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "punch set replaced",
+      "expected_check_id": 3,
+      "reason": "Tooling replacement is relevant to a recent increase.",
+      "cohort": "development",
+      "baseline_check_id": 2
+    },
+    {
+      "name": "feed-moisture",
+      "decision": "FAIL",
+      "probability": 0.69,
+      "history": [
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "feed feels damp",
+      "expected_check_id": 4,
+      "reason": "The note points to feed moisture as a likely source.",
+      "cohort": "development",
+      "baseline_check_id": 5
+    },
+    {
+      "name": "changed-die",
+      "decision": "FAIL",
+      "probability": 0.77,
+      "history": [
+        "FAIL",
+        "FAIL",
+        "FAIL",
+        "FAIL"
+      ],
+      "shift_note": "Die exchanged at shift start",
+      "expected_check_id": 3,
+      "cohort": "held_out",
+      "baseline_check_id": 5
+    },
+    {
+      "name": "powder-clumps",
+      "decision": "FAIL",
+      "probability": 0.69,
+      "history": [
+        "FAIL",
+        "FAIL"
+      ],
+      "shift_note": "Powder clumps observed in hopper",
+      "expected_check_id": 4,
+      "cohort": "held_out",
+      "baseline_check_id": 2
+    },
+    {
+      "name": "blurred-reference",
+      "decision": "FAIL",
+      "probability": 0.64,
+      "history": [
+        "FAIL",
+        "PASS"
+      ],
+      "shift_note": "Known reference image suddenly blurred after refocusing",
+      "expected_check_id": 5,
+      "cohort": "held_out",
+      "baseline_check_id": 2
+    },
+    {
+      "name": "quiet-shift",
+      "decision": "PASS",
+      "probability": 0.06,
+      "history": [
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS",
+        "PASS"
+      ],
+      "shift_note": "Operator signed the routine log",
+      "expected_check_id": 1,
+      "cohort": "held_out",
+      "baseline_check_id": 1
+    }
+  ]
+}
