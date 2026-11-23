@@ -6,6 +6,7 @@ import binascii
 import json
 import fcntl
 import signal
+import socket
 import logging
 import os
 import platform
@@ -173,18 +174,17 @@ def make_handler(engine, database, *, start=True):
             uptime = float(Path("/proc/uptime").read_text().split()[0])
         except (OSError, ValueError, IndexError):
             uptime = None
-        interfaces = []
         try:
-            for item in Path("/sys/class/net").iterdir():
-                if item.name != "lo" and (item / "operstate").read_text().strip() == "up":
-                    interfaces.append(item.name)
+            interfaces = [name for _, name in socket.if_nameindex() if name != "lo"]
+            states = [read_text(Path("/sys/class/net") / name / "operstate") for name in interfaces]
+            link_up = True if "up" in states else None if None in states else False
         except OSError:
-            pass
+            link_up = None
         return {"device_model": read_text("/proc/device-tree/model"),
                 "cpu_architecture": platform.machine() or None,
                 "core_count": os.cpu_count(), "total_ram_bytes": meminfo_kb("MemTotal"),
                 "available_ram_bytes": meminfo_kb("MemAvailable"), "soc_temperature_c": temperature,
-                "uptime_s": uptime, "network_up": bool(interfaces) if Path("/sys/class/net").exists() else None}
+                "uptime_s": uptime, "network_up": link_up}
     class Handler(BaseHTTPRequestHandler):
         def reply(self, status, payload, content_type="application/json; charset=utf-8", download=False):
             body = payload if isinstance(payload, bytes) else json.dumps(payload, ensure_ascii=False).encode()

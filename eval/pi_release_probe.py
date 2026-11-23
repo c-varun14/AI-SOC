@@ -4,6 +4,7 @@ import argparse
 import base64
 import json
 import platform
+import socket
 import subprocess
 import sys
 import threading
@@ -163,7 +164,7 @@ def main():
         try:
             report["system"] = wait_for(ready, 12)
             report["server_ready_s"] = round(time.monotonic() - started, 3)
-            report["network_interfaces"] = sorted(path.name for path in Path("/sys/class/net").iterdir())
+            report["network_interfaces"] = sorted(name for _, name in socket.if_nameindex())
             if args.expect_loopback_only:
                 assert report["network_interfaces"] == ["lo"]
                 assert report["system"]["network_up"] is False
@@ -187,10 +188,10 @@ def main():
             if server.poll() is None:
                 server.terminate()
             report["service_return_code"] = server.wait(timeout=110)
-            report["remaining_owned_processes"] = sorted(
+            report["remaining_owned_processes"] = sorted({
                 pid for item in samples for pid in item["owned_process_rss"]
                 if pid != server.pid and Path("/proc").joinpath(str(pid)).exists()
-            )
+            })
             monitor_stop.set()
             sampler.join()
             report["throttled_after"] = throttled()
