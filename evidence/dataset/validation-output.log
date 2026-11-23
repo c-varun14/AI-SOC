@@ -1,0 +1,48 @@
+I 00:00:00.151312 executorch:cpuinfo_utils.cpp:81] Reading file /sys/devices/soc0/image_version
+I 00:00:00.151497 executorch:cpuinfo_utils.cpp:97] Failed to open midr file /sys/devices/soc0/image_version
+I 00:00:00.151584 executorch:cpuinfo_utils.cpp:110] Reading file /sys/devices/system/cpu/cpu0/regs/identification/midr_el1
+I 00:00:00.151690 executorch:cpuinfo_utils.cpp:110] Reading file /sys/devices/system/cpu/cpu1/regs/identification/midr_el1
+I 00:00:00.151721 executorch:cpuinfo_utils.cpp:110] Reading file /sys/devices/system/cpu/cpu2/regs/identification/midr_el1
+I 00:00:00.151747 executorch:cpuinfo_utils.cpp:110] Reading file /sys/devices/system/cpu/cpu3/regs/identification/midr_el1
+PILLGUARD BATCH MODEL LOAD: SUCCESS
+Processed: 10/60
+Processed: 20/60
+Processed: 30/60
+Processed: 40/60
+Processed: 50/60
+Processed: 60/60
+
+=== PILLGUARD VALIDATION RESULTS ===
+Images evaluated: 60
+Threshold: 0.35
+TP: 25  FN: 5
+FP: 4  TN: 26
+Accuracy: 85.00%
+Precision: 0.8621
+Recall: 0.8333
+F1-score: 0.8475
+Average inference: 308.97 ms
+CSV saved: pillguard_experiment2_validation_predictions.csv
+	Command being timed: "/home/<pi-or-wsl-user>/PillGuard_Member2/build/pillguard_experiment2_validation"
+	User time (seconds): 71.28
+	System time (seconds): 1.06
+	Percent of CPU this job got: 360%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:20.06
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 198000
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 50875
+	Voluntary context switches: 47042
+	Involuntary context switches: 1350
+	Swaps: 0
+	File system inputs: 70800
+	File system outputs: 24
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
