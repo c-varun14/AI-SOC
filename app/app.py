@@ -78,14 +78,10 @@ def make_handler(engine, database):
             decisions = [json.loads(item[0]).get("screening_decision") for item in history]
             last10 = sum(value == "FAIL" for value in decisions)
             last3 = sum(value == "FAIL" for value in decisions[:3])
-            try:
-                fields = engine.advisory(
-                    record["screening_decision"], record["probability_defective"], last10, last3,
-                    record.get("shift_note", ""),
-                )
-            except TypeError:
-                # Compatibility for lightweight pipeline stand-ins in integrations.
-                fields = engine.advisory(record["classification"])
+            fields = engine.advisory(
+                record["screening_decision"], record["probability_defective"], last10, last3,
+                record.get("shift_note", ""),
+            )
             fields["recent_last10_fails"] = last10
             fields["recent_last3_fails"] = last3
             record.update(fields)

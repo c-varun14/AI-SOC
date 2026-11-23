@@ -44,7 +44,9 @@ def rule_baseline_check_id(decision, last10_fails):
 
 
 def advisory_prompt(decision, probability_defective, last10_fails, last3_fails, shift_note):
-    note = (shift_note or "")[:160]
+    # Operator text must not be able to inject chat-template tokens.
+    note = re.sub(r"<\|[^|]*\|>", "", (shift_note or "")).replace("<|", "").replace("|>", "")
+    note = " ".join(note.split())[:160]
     prompt = (
         "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n"
         f"Result {decision}; defect probability {probability_defective:.2f}. "
