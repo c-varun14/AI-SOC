@@ -1,19 +1,52 @@
 # PillGuard technical report · Phase 1, PS5
 
-PillGuard is an offline binary tablet-screening prototype. It runs on Raspberry Pi 4 Model B with 2 GB RAM. The submission reference is the optimized upload deployment whose prior Pi service used loopback port 8766. The matching application, single-pass vision wrapper and advisory filter are in this repository.
+## Problem
 
-A browser upload passes to the Python service. Pillow and NumPy resize and normalize RGB to a float32 tensor. An ARM64 ExecuTorch 1.6.0 XNNPACK runner executes EfficientNetV2-S Experiment 2. The 0.30 defective probability cutoff produces a binary classification. Python maps it deterministically to standard QC review or quarantine. A separate Llama 3.2 1B Instruct Q4 ExecuTorch process generates the advisory with a classification-specific prompt. The app displays only an approved sentence and records the result, timing and advisory status in SQLite. Dispensing authorization always remains false. [Architecture](ARCHITECTURE.md) · [Model metadata and hashes](MODELS.md)
+Visible tablet defects such as spots and breakage can lead regulators to classify products as not of standard quality. Small manufacturers may inspect samples manually. PillGuard is an offline screening prototype that classifies an uploaded tablet image as normal or defective and records the resulting QC route on a Raspberry Pi 4 Model B with 2 GB RAM.
 
-## Measured results from the prior Pi deployment
+## System design
 
-| Evidence | Result |
-|---|---|
-| Candidate upload in a loopback-only network namespace | Normal PASS, standard QC review, 22.11 s. Defective FAIL, quarantine, 22.86 s. Accepted advisory in both cases. |
-| Persistent history | SQLite integrity and record-for-record JSON export equality passed after restart. |
-| Vision dataset evaluation, threshold 0.30 | Test TP 82, FN 18, FP 16, TN 84. Accuracy 83.0%, defect recall 82.0%. Probable source overlap limits this result. |
-| Optimized vision parity | All 260 stored validation and test probabilities and decisions reproduced at printed precision. |
-| Isolated early-QC prototype | 1.21–1.27 s for local HTTP QC response, about 22–23 s to observed advisory completion. Separate prototype evidence. |
+The browser sends an image to a Python HTTP service. Pillow and NumPy decode RGB, resize to 224 × 224, normalize with ImageNet mean and standard deviation, and produce a contiguous float32 CHW tensor. A C++ ExecuTorch Module runs EfficientNetV2-S through XNNPACK on the Cortex-A72. Python validates the output and applies the configured 0.30 defective-probability threshold. PASS maps to standard QC review; FAIL maps to quarantine. Neither permits dispensing.
 
-An earlier standalone Q4 run demonstrated generation on ARM64. The official PS5 technical requirement for on-device Llama via ExecuTorch is evidenced by the Q4 run and offline records. The softmax score is uncalibrated. The binary model supplies no defect subtype, and the service records severity as `NOT_ASSESSED`. Llama is limited to reproducing a constrained QC advisory. Deterministic application logic controls the screening decision and required action. Sustained real-time throughput and independent accuracy remain unverified. Live physical-camera capture remains untested because hardware was unavailable. Uploads are the verified demonstration workflow. [Offline acceptance](../evidence/pi-offline-uploads.log) · [Standalone Q4](../evidence/pi-q4-16-tokens.log) · [Dataset audit](DATASET.md) · [PS5 coverage](PS5-STATUS.md)
+The inspection record is stored in SQLite and exposed through history and JSON export. The verdict-first path returns after vision and deterministic QC; an independent background worker generates and stores the Llama advisory. The current archived Pi measurements also include the earlier sequential path, where advisory generation completes before the request returns.
 
-The later development-only safety fixes and structured advisory experiment are outside the release. [Experiment record](EXPERIMENTS.md)
+## Arm and ExecuTorch deployment
+
+The vision model is exported as a float32 forward graph and deployed in the AArch64 ExecuTorch 1.6.0 runtime with XNNPACK. The Pi verification log records 315 ms mean vision forward latency over the 200-image test set. A wrapper parity log records identical printed probabilities and decisions between the tested wrappers.
+
+Llama 3.2 1B Instruct is exported for ExecuTorch with 8da4w weight quantization, group size 128, 4-bit embedding quantization with groups of 32, float32 override, KV cache, and XNNPACK lowering. The runtime uses four CPU threads. One logged generation measured 11.28 tokens/s prefill and 1.74 tokens/s decode; model loading took about 17 seconds and peak child RSS was about about 800 MiB (818,188 KiB). These are process-level measurements on the 2 GB Pi, not a total application memory guarantee.
+
+The standalone runner was cross-compiled for AArch64 Cortex-A72 using Arm GNU `aarch64-none-linux-gnu` compilers and the toolchain-provided Linux sysroot. `ldd` on the Pi confirms runtime shared-library resolution against the deployed ExecuTorch environment and Pi system libraries; the tested system reports glibc 2.41 ([Pi dependency inventory](../evidence/rollback/pi-checkpoint.log)). The Llama runner uses four CPU threads, and export used `OMP_NUM_THREADS=2`. Build configuration and artifact hashes are recorded in [the runner configuration log](../evidence/pillguard-release-runner-config.log), [cross-build recipe](../models/llama-build/README.md), and [Pi manifest](../evidence/pi-sha256.txt). The exported model and runner use the original tokenizer. The Pi idle check recorded 43.8 °C and no throttling.
+
+## Results
+
+| Measurement | Result | Evidence |
+|---|---:|---|
+| Vision forward, FP32 XNNPACK | 315 ms mean | [Dataset metrics](../evidence/dataset/metrics.json) |
+| Test set at threshold 0.30 | 200 images; 83.0% accuracy; 82.0% defect recall; 83.7% precision | [Dataset metrics](../evidence/dataset/metrics.json) |
+| Confusion matrix at threshold 0.30 | TP 82, FN 18, FP 16, TN 84 | [Dataset metrics](../evidence/dataset/metrics.json) |
+| Llama Q4 prefill / decode | 11.28 / 1.74 tokens/s | [Pi runner log](../evidence/pi-q4-16-tokens.log) |
+| Llama peak child RSS / model load | about 800 MiB (818,188 KiB) / 17 s | [Pi runner log](../evidence/pi-q4-16-tokens.log) |
+| Legacy sequential inspection | optimized: 22.1–22.9 s; baseline: 28.3–31.1 s | [Pi offline uploads](../evidence/pi-offline-uploads.log) |
+| Idle temperature / throttling | 43.8 °C / none observed | [Pi verification](../evidence/pi/pi_verification_2026-11-23.txt) |
+| Offline acceptance | PASS and FAIL uploads, persistence and export with networking removed | [Offline acceptance](../evidence/pi-offline-uploads.log) |
+| Verdict-first quick-QC response (isolated prototype) | ~1.2 s; current release-path measurement **[to measure 24 Nov]** | [Prototype log](../evidence/isolated-async-reference.log) |
+| Llama approved-check selection score on 12 scenarios | **[to measure 24 Nov]** | `llama-check` evaluation in progress |
+| INT8 vs FP32 and 1→4 thread sweep | **[to measure 24 Nov]** | Team measurement in progress |
+| Defect severity from measured area | **[to measure 24 Nov]** | Team measurement in progress |
+
+The test confusion matrix is TP=82, FN=18, FP=16, TN=84. Dataset audit notes identify a possible same-source image crossing train/test; the reported test metrics are therefore provisional. Offline acceptance removed networking and verified uploads, stored records and export behavior. The old sequential app path takes 22.1–22.9 seconds in the optimized run and 28.3–31.1 seconds in the baseline run because each request waits for Llama startup and generation.
+
+## Llama role and evaluation method
+
+The Llama model never sets the screening verdict or required action. The thresholded vision result and deterministic rule select PASS/standard QC review or FAIL/quarantine. Llama receives text context and returns a constrained, non-authoritative advisory that is stored separately from the decision.
+
+Parallel work on `llama-check` uses recent FAIL trends and an operator shift note to select one of five approved QC checks. A rule-based fallback handles unsupported or failed model output. The planned 12-scenario evaluation compares selected checks against a rule baseline; its score remains **[to measure 24 Nov]**. This is an advisory evaluation, not a classifier metric.
+
+## Limitations
+
+The classifier distinguishes only normal from defective and does not label defect subtype. The public dataset may contain source overlap, so independent performance remains to be measured. Acceptance used uploads, not a fixed camera jig with controlled exposure. Severity and area measurement are not yet validated. Probabilities are uncalibrated. PASS is a screening result and never authorizes dispensing. The legacy sequential timing reflects the earlier synchronous path; verdict-first work has a separate prototype measurement and requires a release-path measurement.
+
+## Phase 2 plan
+
+Target Raspberry Pi 5 and a fixed camera jig with locked exposure. Collect an in-house dataset and split by physical tablet to prevent image-level leakage. Measure defect area and severity in mm. Compare INT8 with FP32 and XNNPACK with KleidiAI, including a 1→4 thread sweep. Evaluate Llama reasoning over shift notes blind against the rule baseline and report scenario-level results.

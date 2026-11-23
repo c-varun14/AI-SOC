@@ -1,27 +1,25 @@
-# Actual execution flow
+# System architecture
 
 ```text
-Browser on localhost (or loopback through an SSH tunnel)
-  └─ JPEG/PNG data URL + operator confirms tablet + POST /api/inspect
-       └─ Python HTTP service validates request and image
-            └─ temporary JPEG/PNG -> run_pillguard.py
-                 ├─ Pillow/NumPy preprocessing -> little-endian float32 tensor
-                 └─ Pi ARM64 C++ ExecuTorch Module, XNNPACK, Experiment 2 forward
-                      └─ softmax probabilities, threshold 0.30, binary result
-                           └─ Python verifies output and derives deterministic QC
-                                ├─ PASS -> STANDARD_QC_REVIEW
-                                └─ FAIL -> QUARANTINE
-            └─ separate CPU llama_main -> ExecuTorch, Llama 3.2 1B Q4
-                 └─ result, recent prior SQLite trend and optional shift note -> approved-check ID -> rule fallback for invalid reply
-            └─ SQLite record -> response, history, and JSON export
+Browser (on the Pi, or on a laptop through an SSH tunnel to localhost)
+  └─ image upload + operator confirmation + optional shift note → POST /api/inspect
+       └─ Python HTTP service validates image and operator confirmation
+            └─ Pillow + NumPy preprocessing → float32 1 × 3 × 224 × 224 tensor
+                 └─ C++ ExecuTorch EfficientNetV2-S + XNNPACK on Cortex-A72
+                      └─ defective probability → fixed threshold 0.30 → PASS or FAIL
+                           └─ deterministic QC action
+                                ├─ PASS → STANDARD_QC_REVIEW
+                                └─ FAIL → QUARANTINE
+       ├─ SQLite record → response returned (verdict first); history and JSON export
+       └─ background worker: ExecuTorch Llama 3.2 1B Q4
+            └─ result + FAIL count in the 10 earlier inspections + shift note
+                 → approved-check number 1–5 (invalid reply → rule baseline) → record update
 ```
 
-The binary classification comes from the C++ executable comparing a full-precision score. Python checks the printed class and scores, with a tolerance for threshold rounding. Vision and advisory execute sequentially. Llama receives the deterministic result, FAIL counts from up to ten earlier inspections, and a shift note capped at 160 characters. A first reply digit from 1–5 selects an approved check; other replies use the Python rule baseline. Both QC outcomes keep dispensing authorization false. Severity stays unassessed.
+The vision result and QC rule determine the verdict and required action. The C++ executable compares a full-precision score with the threshold; Python checks the printed class and scores, with a tolerance for threshold rounding.
 
-- **Baseline, 8765.** The binary uses its first forward result and runs ten further timed forwards. The app returns after advisory and persists the combined record. Historical reference documented in the prior audit.
-- **Optimized deployment, 8766.** A rebuilt vision wrapper uses the same first forward and omits the ten timed passes. The Llama prompt is shorter by six tokens per tested case, with the same decisions and approved sentences. The branch uses separate storage. See `app/` and `vision/`.
-- **Asynchronous prototype.** Uses the optimized vision executable, prompt and unchanged models. After vision, it commits a pending row and returns HTTP 202 with the decision. The browser shows QC and polls `/api/inspection/<id>`. The background worker writes advisory fields and completion timing only. A single slot covers both heavy subprocesses. Competing requests receive HTTP 409. No model stays resident between inspections. On startup, the prototype marks persisted pending advisory records as interrupted. It was tested in separate directories and ports, and remains outside the two working deployments.
+The HTTP response returns after vision and QC. One background worker runs Llama, so only one Llama process is ever in memory, and the browser polls `/api/inspection/<id>` until the advisory arrives. Llama receives text derived from the result; it does not see image pixels, set PASS/FAIL, or change the action. It receives the deterministic result, FAIL counts from up to ten earlier inspections, and a shift note capped at 160 characters with chat-template tokens removed. The first digit of its reply selects one of five approved checks; any other reply, a timeout or an error falls back to the Python rule baseline, and the UI shows which one chose. A failed or pending advisory never changes the recorded QC result. Dispensing authorization remains false for both outcomes, and severity is not yet assessed.
 
-SQLite stores the inspection ID, timestamp, and complete JSON record. The APIs expose a recent history projection and a downloadable JSON export. The offline acceptance evidence tests normal and defective uploaded files, exact deployed hashes, and export equality following restart. Live camera input remains untested because physical hardware was unavailable.
+SQLite stores the inspection ID, timestamp and complete JSON record, including the advisory status. The APIs expose a recent-history projection and a downloadable JSON export. The browser supports image uploads, camera capture and video-frame capture; recorded Pi acceptance and performance evidence used image uploads. Llama accuracy on the 12 seeded scenarios in `eval/` has not yet been measured on the Pi.
 
-Llama accuracy on the seeded evaluation scenarios has not yet been measured on the Pi. The selected check is advisory only and does not change the verdict or mandatory QC instruction.
+See [UI changes](UI-CHANGES.md), [measured results](TECHNICAL-REPORT.md), and [offline evidence](../evidence/README.md).

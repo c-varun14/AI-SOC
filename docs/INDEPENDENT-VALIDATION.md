@@ -12,6 +12,6 @@ Current status: the two demo cases establish system behavior. The 260 earlier te
 
 ## Procedure on the Pi
 
-Create a locked CSV with columns `image,sha256,label,specimen_id,batch_id,collection`. Paths are relative to the CSV, labels are `normal` or `defective`, and specimen identifiers must be globally unique in the evaluation file. Keep the adjudication and near-duplicate audit alongside the manifest. An explicit human provenance review remains necessary.
+Create a locked CSV with columns `image,sha256,label,specimen_id,batch_id,collection`. Paths are relative to the CSV, labels are `normal` or `defective`, and specimen identifiers must be globally unique in the evaluation file. Keep the adjudication and near-duplicate audit alongside the manifest. Document provenance review and record unresolved matches.
 
-Run the recorded Pi vision wrapper on each locked file in a separate test deployment. Preserve the per-specimen CSV, label adjudication and manifest hash. Evaluate once against the frozen 0.30 decision threshold. The later manifest CLI is in the separate development copy. Its promotion is outside this submission reference.
+Run the recorded Pi vision wrapper on each locked file in an isolated Pi deployment. Preserve the per-specimen CSV, label adjudication and manifest hash. Evaluate once against the frozen 0.30 decision threshold. A manifest-based runner can make the evaluation repeatable; it is not part of the current deployed workflow.

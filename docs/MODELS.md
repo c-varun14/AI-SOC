@@ -18,9 +18,9 @@ The advisory prompt is bounded for the model's 256-token context. Only a first r
 
 ## Export provenance
 
-The stage includes a path-parameterized vision exporter. It requires the authorized Experiment 2 checkpoint, a normalized sample tensor and the matching Torch, torchvision and ExecuTorch environment. From a separate working directory run `python models/export_efficientnetv2_experiment2_to_executorch.py --checkpoint <checkpoint> --sample <tensor> --output <new-file.pte>`. The output is created exclusively. Re-export is optional for the submission reference.
+The repository includes a path-parameterized vision exporter. It requires the matching Experiment 2 checkpoint, a normalized sample tensor and the matching Torch, torchvision and ExecuTorch environment. From a separate working directory run `python models/export_efficientnetv2_experiment2_to_executorch.py --checkpoint <checkpoint> --sample <tensor> --output <new-file.pte>`. The output is created exclusively. Re-export is optional.
 
-The historical Llama export used the existing CPU ExecuTorch 1.6.0 package, original Meta checkpoint files and tokenizer. In an empty output working directory with authorized inputs, the archival recipe is:
+The historical Llama export used the existing CPU ExecuTorch 1.6.0 package, original Meta checkpoint files and tokenizer. In an empty output working directory with the required inputs, the archival recipe is:
 
 ```sh
 OMP_NUM_THREADS=2 python -m executorch.examples.models.llama.export_llama \
@@ -32,4 +32,4 @@ OMP_NUM_THREADS=2 python -m executorch.examples.models.llama.export_llama \
   --output-dir . --output_name pillguard_llama32_1b_q4_xnnpack.pte
 ```
 
-The fresh-checkout review does not retrain or re-export the models. [Cortex-A72 build recipe](../models/llama-build/README.md) · [Licensing and attribution](../notices/RIGHTS.md)
+This repository does not include the model weights and does not retrain or re-export them during setup. [Cortex-A72 build recipe](../models/llama-build/README.md) · [Licensing and attribution](../notices/RIGHTS.md)
