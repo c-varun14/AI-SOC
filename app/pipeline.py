@@ -15,10 +15,49 @@ VISION_MODEL = "pillguard_efficientnetv2_s_experiment2_xnnpack.pte"
 LLAMA_MODEL = "pillguard_llama32_1b_q4_xnnpack.pte"
 THRESHOLD = 0.30
 ASSISTANT_HEADER = "<|start_header_id|>assistant<|end_header_id|>"
-EXPLANATIONS = {
-    "defective": "The tablet was flagged as defective and should be quarantined for quality review.",
-    "normal": "The tablet was classified as normal and should continue to standard quality review.",
+APPROVED_CHECKS = {
+    1: "Continue standard QC review. No pattern in recent results.",
+    2: "Re-inspect this tablet by hand under the bench lamp and confirm the defect.",
+    3: "Inspect punch and die tooling for wear or chipping.",
+    4: "Check the granulate or feed lot for contamination, moisture or foreign particles.",
+    5: "Check camera, lighting and lens, and re-run a known-good reference tablet before trusting results.",
 }
+PROMPT_CHECKS = {
+    1: "continue standard QC",
+    2: "hand re-inspect tablet",
+    3: "inspect punch and die",
+    4: "check granulate or feed lot",
+    5: "check camera and reference tablet",
+}
+PROMPT_MAX_CHARS = 700
+EXPLANATIONS = {"defective": "", "normal": ""}
+
+
+def rule_baseline_check_id(decision, last10_fails):
+    if decision == "FAIL" and last10_fails >= 3:
+        return 5
+    if decision == "FAIL":
+        return 2
+    if last10_fails <= 1:
+        return 1
+    return 5
+
+
+def advisory_prompt(decision, probability_defective, last10_fails, last3_fails, shift_note):
+    # Operator text must not be able to inject chat-template tokens.
+    note = re.sub(r"<\|[^|]*\|>", "", (shift_note or "")).replace("<|", "").replace("|>", "")
+    note = " ".join(note.split())[:160]
+    prompt = (
+        "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n"
+        f"Result {decision}; defect probability {probability_defective:.2f}. "
+        f"Recent FAIL: {last10_fails}/10, {last3_fails}/3. Shift note: {note or '(none)'}.\n"
+        "Choose one check; reply with its number only.\n"
+        + "\n".join(f"{i}. {text}" for i, text in PROMPT_CHECKS.items())
+        + "<|eot_id|>" + ASSISTANT_HEADER + "\n\n"
+    )
+    if len(prompt) > PROMPT_MAX_CHARS:
+        raise ValueError("Advisory prompt exceeds character limit")
+    return prompt
 
 
 def field(output, label):
@@ -94,24 +133,23 @@ class Pipeline:
             result["vision_wall_s"] = round(time.monotonic() - start, 3)
             return result
 
-    def advisory(self, classification):
-        return self._advisory(classification)
+    def advisory(self, decision, probability_defective=0.0, last10_fails=0,
+                 last3_fails=0, shift_note=""):
+        return self._advisory(decision, probability_defective, last10_fails,
+                              last3_fails, shift_note)
 
-    def _advisory(self, classification):
+    def _advisory(self, decision, probability_defective, last10_fails, last3_fails, shift_note):
         start = time.monotonic()
-        status, approved, raw, metrics = "ERROR", "", "", {}
-        prompt = (
-            "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n"
-            "Copy exactly:\n"
-            + EXPLANATIONS[classification]
-            + "<|eot_id|>" + ASSISTANT_HEADER + "\n\n"
-        )
+        status, raw, metrics = "ERROR", "", {}
+        baseline = rule_baseline_check_id(decision, last10_fails)
+        selected = None
+        prompt = advisory_prompt(decision, probability_defective, last10_fails, last3_fails, shift_note)
         try:
             process = subprocess.run(
                 [
                     self.llama_runner, "--model_path", self.vision_dir / LLAMA_MODEL,
                     "--tokenizer_path", self.tokenizer, "--prompt", prompt,
-                    "--temperature", "0", "--cpu_threads", "4", "--max_new_tokens", "24",
+                    "--temperature", "0", "--cpu_threads", "4", "--max_new_tokens", "3",
                 ],
                 capture_output=True, text=True, timeout=90,
             )
@@ -124,16 +162,26 @@ class Pipeline:
                     raise ValueError("Missing Llama generation or timing report")
                 metrics = json.loads(report.strip())
                 raw = re.split(r"<\|(?:eot_id|end_of_text)\|>", raw, maxsplit=1)[0].strip()
-                approved = approved_advisory(raw, classification)
-                status = "COMPLETED_DISPLAYED" if approved else "COMPLETED_NOT_APPROVED"
+                match = re.search(r"[0-9]", raw)
+                if match:
+                    candidate = int(match.group(0))
+                    if candidate in APPROVED_CHECKS:
+                        selected = candidate
+                status = "COMPLETED_DISPLAYED" if selected is not None else "COMPLETED_NOT_APPROVED"
         except subprocess.TimeoutExpired:
             status, raw = "TIMEOUT", "Llama generation exceeded 90 seconds"
         except (OSError, ValueError) as exc:
             raw = str(exc)
+        source = "llama" if selected is not None else "rule_fallback"
+        chosen = selected if selected is not None else baseline
         return {
             "llama_model": LLAMA_MODEL,
             "llama_status": status,
-            "llama_explanation": approved,
+            "llama_explanation": APPROVED_CHECKS[chosen],
+            "advisory_check_id": chosen,
+            "advisory_check_text": APPROVED_CHECKS[chosen],
+            "advisory_source": source,
+            "rule_baseline_check_id": baseline,
             "llama_raw_for_review": raw[-1200:],
             "llama_metrics": metrics,
             "llama_latency_s": round(time.monotonic() - start, 3),

@@ -50,10 +50,8 @@ import sys
 import time
 time.sleep(.25)
 prompt = sys.argv[sys.argv.index("--prompt") + 1]
-assert "Copy exactly:" in prompt
-advice = "The tablet was classified as normal and should continue to standard quality review."
-if "flagged as defective" in prompt:
-    advice = "Unsupported advisory must be rejected."
+assert "Choose one check" in prompt
+advice = "1"
 print(prompt + advice)
 print("PyTorchObserver {{}}")
 """)
@@ -70,7 +68,7 @@ print("PyTorchObserver {{}}")
                     responses = []
                     for color, decision, action, advisory in (
                         ("black", "PASS", "STANDARD_QC_REVIEW", "COMPLETED_DISPLAYED"),
-                        ("white", "FAIL", "QUARANTINE", "COMPLETED_NOT_APPROVED"),
+                        ("white", "FAIL", "QUARANTINE", "COMPLETED_DISPLAYED"),
                     ):
                         buffer = BytesIO()
                         Image.new("RGB", (4, 4), color).save(buffer, "PNG")
@@ -96,7 +94,8 @@ print("PyTorchObserver {{}}")
                                 break
                             time.sleep(.03)
                         self.assertEqual(final["llama_status"], advisory)
-                        self.assertEqual(bool(final["llama_explanation"]), decision == "PASS")
+                        self.assertTrue(final["advisory_check_text"])
+                        self.assertEqual(final["advisory_source"], "llama")
                         responses.append(final)
                     with urlopen(url + "/api/system", timeout=5) as response:
                         system = json.load(response)
@@ -127,6 +126,53 @@ print("PyTorchObserver {{}}")
         self.assertEqual(verdict["screening_decision"], "FAIL")
         self.assertEqual(verdict["required_action"], "QUARANTINE")
         self.assertIs(verdict["dispensing_authorized"], False)
+
+
+class AdvisoryChecks(unittest.TestCase):
+    def test_reply_validation_and_rule_fallback(self):
+        import subprocess
+        engine = Pipeline("/tmp", "/tmp/llama", "/tmp/tokenizer")
+        for output, expected_source, status in (("answer 3", "llama", "COMPLETED_DISPLAYED"),
+                                                ("garbage", "rule_fallback", "COMPLETED_NOT_APPROVED"),
+                                                ("", "rule_fallback", "COMPLETED_NOT_APPROVED"),
+                                                ("6", "rule_fallback", "COMPLETED_NOT_APPROVED")):
+            class Completed:
+                returncode = 0
+                stderr = ""
+                stdout = "<|start_header_id|>assistant<|end_header_id|>\n\n" + output + "\nPyTorchObserver {}"
+            with patch("pipeline.subprocess.run", return_value=Completed()):
+                result = engine.advisory("FAIL", .73, 2, 1, "changed punch set")
+            self.assertEqual(result["advisory_source"], expected_source)
+            self.assertEqual(result["llama_status"], status)
+            self.assertEqual(result["advisory_check_id"], 3 if output == "answer 3" else 2)
+
+    def test_prompt_note_limit_and_length(self):
+        from pipeline import advisory_prompt, PROMPT_MAX_CHARS
+        prompt = advisory_prompt("FAIL", .99, 10, 3, "x" * 160)
+        self.assertLessEqual(len(prompt), PROMPT_MAX_CHARS)
+
+    def test_shift_note_rejected_over_limit(self):
+        from app import decode_request
+        with self.assertRaises(ValueError):
+            decode_request({"pill_present_confirmed": True, "shift_note": "x" * 161})
+
+    def test_rule_timeout_fallback_does_not_mutate_verdict(self):
+        import subprocess
+        from pipeline import rule_baseline_check_id
+        engine = Pipeline("/tmp", "/tmp/llama", "/tmp/tokenizer")
+        verdict = {"screening_decision": "FAIL", "required_action": "QUARANTINE", "advisory": "fixed", "dispensing_authorized": False}
+        before = verdict.copy()
+        with patch("pipeline.subprocess.run", side_effect=subprocess.TimeoutExpired("llama", 90)):
+            fields = engine.advisory("FAIL", .8, 4, 2, "lamp replaced")
+        self.assertEqual(fields["llama_status"], "TIMEOUT")
+        self.assertEqual(fields["advisory_check_id"], rule_baseline_check_id("FAIL", 4))
+        self.assertEqual(verdict, before)
+
+    def test_trend_query_uses_strict_prior_timestamp(self):
+        import inspect
+        from app import make_handler
+        source = inspect.getsource(make_handler)
+        self.assertIn("WHERE created_at < ?", source)
 
 
 if __name__ == "__main__":
