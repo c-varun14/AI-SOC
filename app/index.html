@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PillGuard | Offline Edge Inspection</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#eaf1ff;background:#0c1220}
+*{box-sizing:border-box}body{margin:0}header{padding:22px max(18px,calc((100vw - 1160px)/2));border-bottom:1px solid #283449;background:#111b2d}
+h1{margin:0;font-size:28px;letter-spacing:-.7px}.sub{color:#a4b3cc;font-size:13px;margin-top:6px}
+main{max-width:1160px;margin:auto;padding:24px 18px;display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.panel{background:#151f31;border:1px solid #2a3850;border-radius:16px;padding:20px;min-width:0}
+h2{font-size:17px;margin:0 0 16px}h3{font-size:14px;color:#b8c9e3}button,.filebtn{display:inline-flex;align-items:center;justify-content:center;background:#4c80f0;color:white;border:0;border-radius:9px;padding:11px 14px;font-weight:650;cursor:pointer;font-size:14px}
+button:disabled{opacity:.5;cursor:not-allowed}button.secondary,.filebtn{background:#273b5b}.actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+input[type=file]{display:none}video,img,canvas{max-width:100%;border-radius:10px}#preview,#camera,#video{width:100%;max-height:330px;object-fit:contain;background:#080e19;border:1px solid #2c3a50;min-height:200px}
+#camera,#video{display:none}#result{display:none}.status{font-size:12px;color:#b2c5e5;margin:10px 0;white-space:pre-wrap}
+.tag{display:inline-block;padding:6px 11px;border-radius:100px;font-size:12px;font-weight:750;background:#273b5b}
+.tag.bad{background:#653039;color:#ffdce0}.tag.good{background:#244f48;color:#c3ffe8}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
+.kpi{background:#0f1929;padding:13px;border-radius:10px}.kpi small{display:block;color:#9eb0cd}.kpi strong{display:block;font-size:17px;margin-top:6px;overflow-wrap:anywhere}
+.advisory{padding:14px;background:#233449;border-left:3px solid #7ea9ff;border-radius:8px;line-height:1.55}
+.muted{color:#9daec8;font-size:13px;line-height:1.5}.history{grid-column:1/-1}
+.historyitem{padding:11px 0;border-top:1px solid #29384f;display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;font-size:13px}
+#llama{white-space:pre-wrap}.error{color:#ffb7b7}a{color:#99bbff}details{margin-top:12px}summary{cursor:pointer;color:#c3d4f1}
+@media(max-width:800px){main{grid-template-columns:1fr}.history{grid-column:auto}}
+</style></head>
+<body><header><h1>🛡 PillGuard</h1><div class="sub">Offline edge inspection • ExecuTorch vision • Llama 3.2 advisory • Local history</div></header>
+<main><section class="panel"><h2>New inspection</h2><div class="muted">Upload a tablet image, take a camera photo, or select a frame from a recorded video. A screening pass proceeds to standard QC review.</div>
+<div class="actions"><label class="filebtn" for="imagefile">Upload image</label><input id="imagefile" type="file" accept="image/jpeg,image/png">
+<button class="secondary" id="camBtn">Start camera</button><label class="filebtn" for="videofile">Open video</label><input id="videofile" type="file" accept="video/*"></div>
+<img style="display:none" id="preview" alt="Image selected for inspection"><video id="camera" autoplay muted playsinline></video><video id="video" controls playsinline></video>
+<label class="muted" style="display:block;margin:10px 0"><input id="pillConfirmed" type="checkbox"> I confirm a pharmaceutical pill/tablet is visible in this image (manual confirmation, not AI detection).</label>
+<div class="actions"><button id="captureBtn" class="secondary" style="display:none">Capture frame</button><button id="inspectBtn" disabled>Inspect selected image</button></div>
+<div id="status" class="status">Select an image to begin.</div><p class="muted">Camera requires localhost or a secure browser origin. For a recorded video, pause on a frame and choose Capture frame.</p></section>
+<section class="panel"><h2>Inspection result</h2><div id="empty" class="muted">No inspection yet.</div><div id="result">
+<div id="badge" class="tag"></div><div class="kpis"><div class="kpi"><small>Model score (not calibrated)</small><strong id="score"></strong></div><div class="kpi"><small>Required action</small><strong id="action"></strong></div><div class="kpi"><small>Severity</small><strong id="severity"></strong></div><div class="kpi"><small>Dispensing authorized</small><strong id="dispense"></strong></div></div>
+<h3>Mandatory QC instruction</h3><div id="advisory" class="advisory"></div>
+<h3>Llama 3.2 explanation (non-authoritative)</h3><div id="llama" class="muted"></div><div id="llamaStatus" class="status"></div>
+<details><summary>Technical details</summary><pre id="details" style="overflow:auto;white-space:pre-wrap;font-size:11px"></pre></details>
+</div></section>
+<section class="panel history"><h2>Offline inspection history</h2><div class="actions"><button class="secondary" id="refresh">Refresh history</button><button class="secondary" id="export">Export JSON</button></div><div id="history" class="muted">Loading...</div></section></main>
+<script>
+const $=id=>document.getElementById(id);let inspecting=false,imageData=null,source='upload',stream=null,videoURL=null;
+function status(s,err=false){$('status').textContent=s;$('status').className='status'+(err?' error':'')}
+function stopCamera(){if(stream){stream.getTracks().forEach(track=>track.stop());stream=null;$('camera').srcObject=null}}
+function setImage(data,src){stopCamera();$('video').pause();imageData=data;source=src;$('pillConfirmed').checked=false;$('preview').src=data;$('preview').style.display='block';$('camera').style.display='none';$('video').style.display='none';$('captureBtn').style.display='none';$('inspectBtn').disabled=true;status('Image ready. Confirm a pill is visible, then inspect.')}
+function fileToData(file){return new Promise((ok,bad)=>{let r=new FileReader();r.onload=()=>ok(r.result);r.onerror=()=>bad(new Error('Cannot read file'));r.readAsDataURL(file)})}
+$('imagefile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{setImage(await fileToData(f),'upload')}catch(err){status(err.message,true)}};
+$('camBtn').onclick=async()=>{imageData=null;$('pillConfirmed').checked=false;$('inspectBtn').disabled=true;try{stopCamera();stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});$('camera').srcObject=stream;$('camera').style.display='block';$('preview').style.display='none';$('video').style.display='none';$('captureBtn').style.display='inline-flex';$('captureBtn').textContent='Capture camera image';source='camera';status('Camera active. Capture an image.')}catch(err){status('Camera unavailable: '+err.message,true)}};
+$('videofile').onchange=e=>{let f=e.target.files[0];if(!f)return;stopCamera();imageData=null;$('pillConfirmed').checked=false;$('inspectBtn').disabled=true;if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(f);$('video').src=videoURL;$('video').style.display='block';$('preview').style.display='none';$('camera').style.display='none';$('captureBtn').style.display='inline-flex';$('captureBtn').textContent='Capture video frame';source='video_frame';status('Play or pause video at the frame to inspect, then capture.')};
+$('captureBtn').onclick=()=>{let v=source==='camera'?$('camera'):$('video');if(!v.videoWidth){status('Wait until the video frame is available.',true);return}let c=document.createElement('canvas');const scale=Math.min(1,1600/Math.max(v.videoWidth,v.videoHeight));c.width=Math.round(v.videoWidth*scale);c.height=Math.round(v.videoHeight*scale);c.getContext('2d').drawImage(v,0,0,c.width,c.height);let src=source;setImage(c.toDataURL('image/jpeg',.9),src)};
+$('pillConfirmed').onchange=()=>{$('inspectBtn').disabled=inspecting||!imageData||!$('pillConfirmed').checked};
+$('inspectBtn').onclick=async()=>{if(inspecting)return;if(!imageData||!$('pillConfirmed').checked){status('Confirm that a pharmaceutical pill is visible before inspection.',true);return;}inspecting=true;$('inspectBtn').disabled=true;status('Running ExecuTorch vision, safety rules, then local Llama. This usually takes about 25 seconds.');try{let r=await fetch('/api/inspect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:imageData,source,pill_present_confirmed:true})});let d=await r.json();if(!r.ok)throw Error(d.error||'Inspection failed');$('empty').style.display='none';$('result').style.display='block';$('badge').textContent=d.screening_decision+' · '+d.classification.toUpperCase();$('badge').className='tag '+(d.classification==='defective'?'bad':'good');$('score').textContent=(100*d.model_score).toFixed(1)+'%';$('action').textContent=d.required_action;$('severity').textContent=d.severity;$('dispense').textContent=d.dispensing_authorized?'YES':'NO';$('advisory').textContent=d.advisory;$('llama').textContent=d.llama_explanation||'No approved Llama explanation; deterministic QC instruction remains in effect.';$('llamaStatus').textContent='Llama status: '+d.llama_status+' • '+d.llama_latency_s+' s';$('details').textContent=JSON.stringify(d,null,2);status('Inspection saved locally: '+d.inspection_id);loadHistory()}catch(err){status('ERROR: '+err.message,true)}finally{inspecting=false;$('inspectBtn').disabled=!imageData||!$('pillConfirmed').checked}};
+async function loadHistory(){try{let r=await fetch('/api/history');let a=await r.json();$('history').replaceChildren();if(!a.length){$('history').textContent='No inspections yet.';return}for(let d of a){let row=document.createElement('div');row.className='historyitem';let l=document.createElement('span'),right=document.createElement('span');l.textContent=d.created_at+'  |  '+d.screening_decision+'  |  '+d.classification.toUpperCase()+'  |  '+(100*d.model_score).toFixed(1)+'%  |  '+d.required_action;right.textContent=d.llama_status+'  •  '+d.source;row.append(l,right);$('history').append(row)}}catch(err){$('history').textContent='History unavailable: '+err.message}}
+$('refresh').onclick=loadHistory;$('export').onclick=()=>{location.href='/api/export'};loadHistory();
+</script></body></html>
