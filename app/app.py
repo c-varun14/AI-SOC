@@ -157,8 +157,8 @@ def make_handler(engine, database):
                 records = [json.loads(row[0]) for row in rows]
             if not export:
                 fields = ("inspection_id", "created_at", "source", "classification", "required_action",
-                          "llama_status", "screening_decision", "model_score", "inspection_wall_s")
-                records = [{key: record[key] for key in fields} for record in records]
+                          "llama_status", "screening_decision", "model_score", "probability_defective", "inspection_wall_s")
+                records = [{key: record.get(key) for key in fields} for record in records]
             self.reply(200, records, download=export)
 
         def do_POST(self):
@@ -206,7 +206,7 @@ def make_handler(engine, database):
                     )
                 logging.info("inspection=%s source=%s decision=%s qc=%s llama=%s elapsed=%.3fs",
                              inspection_id, source, result["screening_decision"],
-                             result["required_action"], result["llama_status"], record["inspection_wall_s"])
+                             result["required_action"], record["llama_status"], record["inspection_wall_s"])
             except Exception:
                 logging.exception("Inspection %s failed", inspection_id)
                 self.reply(500, {"error": "Inspection failed. See the local PillGuard log."})
@@ -228,6 +228,8 @@ def main():
     parser.add_argument("--tokenizer", required=True, type=Path)
     parser.add_argument("--data-dir", type=Path, default=Path("data"))
     parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument("--host", default="127.0.0.1",
+                        help="Bind address. Default is loopback only; use 0.0.0.0 only on a trusted offline LAN.")
     args = parser.parse_args()
 
     args.data_dir.mkdir(parents=True, exist_ok=True)
@@ -242,8 +244,8 @@ def main():
         handlers=[logging.FileHandler(args.data_dir / "pillguard.log"), logging.StreamHandler()],
     )
     engine = Pipeline(args.vision_dir, args.llama_runner, args.tokenizer)
-    with ThreadingHTTPServer(("0.0.0.0", args.port), make_handler(engine, database)) as server:
-        logging.info("PillGuard ready on port %d", args.port)
+    with ThreadingHTTPServer((args.host, args.port), make_handler(engine, database)) as server:
+        logging.info("PillGuard ready at http://%s:%d", args.host, args.port)
         try:
             server.serve_forever()
         except KeyboardInterrupt:
