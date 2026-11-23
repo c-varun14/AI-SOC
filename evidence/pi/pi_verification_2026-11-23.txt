@@ -1,0 +1,60 @@
+PILLGUARD PHASE 1 - RASPBERRY PI VERIFICATION
+2026-11-23T11:07:17+05:30
+
+===== SYSTEM =====
+pillguard-pi
+Linux pillguard-pi 6.18.60+rpt-rpi-v8 #1 SMP PREEMPT Debian 1:6.18.60-1+rpt1 (2026-11-03) aarch64 GNU/Linux
+ 11:07:17 up 16 min,  2 users,  load average: 0.05, 0.20, 0.15
+
+===== MEMORY =====
+               total        used        free      shared  buff/cache   available
+Mem:           1.8Gi       209Mi       717Mi       5.6Mi       981Mi       1.6Gi
+Swap:          1.8Gi          0B       1.8Gi
+
+===== TEMPERATURE =====
+temp=43.8'C
+
+===== THROTTLING =====
+throttled=0x0
+
+===== APPLICATION PROCESS =====
+   1292       09:49 26784 python3 app.py --vision-dir /home/rishi/PillGuard_Member2 --llama-runner /home/rishi/PillGuard_Llama/et160-a72.aL7oXF/llama_main --tokenizer /home/rishi/PillGuard_Llama/tokenizer.model
+
+===== INSPECTION HISTORY =====
+Total inspections: 9
+2026-11-23T05:32:49.471795+00:00 32d468a64ef045c3952386dfd49c2854
+2026-11-23T05:30:48.137469+00:00 25f0191a158643e2a324392ff8f3bd91
+2026-11-22T20:27:30.334031+00:00 126c726aba2e43d7b18dde60bfa5119c
+2026-11-22T20:26:40.710408+00:00 5e9d97d0f25a43a3b0e4ffe3375bcda1
+2026-11-22T20:25:44.784347+00:00 f59f9afd120b4b8db08adcd6c6207cc6
+2026-11-22T20:24:20.975736+00:00 a244abac735e4652a9837a7bb907ec58
+2026-11-22T20:23:35.469298+00:00 2c25e87f8ef1475cabedbad00d788bd5
+2026-11-20T11:41:26.568316+00:00 3addfeaabfb444269c3bb3239732579a
+2026-11-20T11:40:57.564334+00:00 6f5eadf5e6cf444b9bf606d955c7d124
+
+===== RECENT APPLICATION LOG =====
+2026-11-23 01:47:03,978 INFO "GET / HTTP/1.1" 200 -
+2026-11-23 01:48:07,061 INFO "GET /?utm_source=chatgpt.com HTTP/1.1" 404 -
+2026-11-23 01:48:42,476 INFO "GET / HTTP/1.1" 200 -
+2026-11-23 01:49:05,862 INFO "GET /?utm_source=chatgpt.com HTTP/1.1" 404 -
+2026-11-23 01:49:06,665 INFO "GET /?utm_source=chatgpt.com HTTP/1.1" 404 -
+2026-11-23 01:49:43,972 INFO "GET / HTTP/1.1" 200 -
+2026-11-23 01:52:39,868 INFO "GET / HTTP/1.1" 200 -
+2026-11-23 01:54:03,647 INFO inspection=2c25e87f8ef1475cabedbad00d788bd5 source=upload decision=FAIL qc=QUARANTINE llama=COMPLETED_DISPLAYED elapsed=28.153s
+2026-11-23 01:54:03,648 INFO "POST /api/inspect HTTP/1.1" 200 -
+2026-11-23 01:54:47,545 INFO inspection=a244abac735e4652a9837a7bb907ec58 source=upload decision=PASS qc=STANDARD_QC_REVIEW llama=COMPLETED_DISPLAYED elapsed=26.550s
+2026-11-23 01:54:47,545 INFO "POST /api/inspect HTTP/1.1" 200 -
+2026-11-23 01:56:11,397 INFO inspection=f59f9afd120b4b8db08adcd6c6207cc6 source=upload decision=PASS qc=STANDARD_QC_REVIEW llama=COMPLETED_DISPLAYED elapsed=26.590s
+2026-11-23 01:56:11,398 INFO "POST /api/inspect HTTP/1.1" 200 -
+2026-11-23 01:57:06,701 INFO inspection=5e9d97d0f25a43a3b0e4ffe3375bcda1 source=upload decision=PASS qc=STANDARD_QC_REVIEW llama=COMPLETED_DISPLAYED elapsed=25.973s
+2026-11-23 01:57:06,702 INFO "POST /api/inspect HTTP/1.1" 200 -
+2026-11-23 01:57:57,801 INFO inspection=126c726aba2e43d7b18dde60bfa5119c source=upload decision=FAIL qc=QUARANTINE llama=COMPLETED_DISPLAYED elapsed=27.443s
+2026-11-23 01:57:57,802 INFO "POST /api/inspect HTTP/1.1" 200 -
+2026-11-23 10:57:29,161 INFO PillGuard ready at http://localhost:8765
+2026-11-23 10:59:26,320 INFO "GET /?utm_source=chatgpt.com HTTP/1.1" 404 -
+2026-11-23 10:59:26,385 INFO "GET /favicon.ico HTTP/1.1" 404 -
+2026-11-23 11:00:17,629 INFO "GET / HTTP/1.1" 200 -
+2026-11-23 11:01:24,053 INFO inspection=25f0191a158643e2a324392ff8f3bd91 source=upload decision=FAIL qc=QUARANTINE llama=COMPLETED_DISPLAYED elapsed=35.897s
+2026-11-23 11:01:24,053 INFO "POST /api/inspect HTTP/1.1" 200 -
+2026-11-23 11:03:14,366 INFO inspection=32d468a64ef045c3952386dfd49c2854 source=upload decision=PASS qc=STANDARD_QC_REVIEW llama=COMPLETED_DISPLAYED elapsed=24.873s
+2026-11-23 11:03:14,366 INFO "POST /api/inspect HTTP/1.1" 200 -
