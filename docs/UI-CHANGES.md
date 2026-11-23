@@ -1,0 +1,7 @@
+# PillGuard operator UI refresh
+
+The inspection endpoint now saves and returns the deterministic vision and QC verdict as soon as those stages finish. Advisory generation runs through one FIFO background worker, and its status and existing advisory fields are written back to the stored record. `GET /api/inspection/<id>` supports polling, and `GET /api/system` reports Linux device, CPU, memory, temperature, uptime, and non-loopback interface status with unavailable values represented as null where applicable. Records include `vision_forward_ms`, `vision_wall_s`, `verdict_wall_s`, `preprocess_ms` (currently null because the unchanged runner does not report preprocessing separately), and the existing advisory latency and metrics.
+
+The single-file UI uses offline system fonts and inline SVG. It presents the verdict before the Llama advisory, the device status, pipeline timings, advisory progress, session counts and sparkline, and a selectable history table. Upload, camera capture, recorded-video frame capture, operator confirmation, history refresh, JSON export, and technical details remain available. The server listens on all interfaces so a laptop on the offline LAN can open it.
+
+Verification in this environment was limited: the Python release tests could not start because Pillow is not installed and `python` has no pip module. This build has not been run on a Raspberry Pi. Browser console and network-request checks could not be completed without launching the app in a browser. The HTML source contains no external resource references.
