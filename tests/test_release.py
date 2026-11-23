@@ -10,7 +10,9 @@ import sqlite3
 import sys
 import tempfile
 import threading
+import time
 import unittest
+from unittest.mock import patch
 from urllib.request import Request, urlopen
 
 from PIL import Image
@@ -45,6 +47,8 @@ print("Prediction:", "DEFECTIVE" if defective else "NORMAL")
             llama = tmp / "llama_main"
             llama.write_text(f"""#!{sys.executable}
 import sys
+import time
+time.sleep(.25)
 prompt = sys.argv[sys.argv.index("--prompt") + 1]
 assert "Copy exactly:" in prompt
 advice = "The tablet was classified as normal and should continue to standard quality review."
@@ -81,14 +85,48 @@ print("PyTorchObserver {{}}")
                         self.assertEqual(record["required_action"], action)
                         self.assertEqual(record["threshold"], THRESHOLD)
                         self.assertIs(record["dispensing_authorized"], False)
-                        self.assertEqual(record["llama_status"], advisory)
-                        self.assertEqual(bool(record["llama_explanation"]), decision == "PASS")
-                        responses.append(record)
+                        self.assertEqual(record["llama_status"], "PENDING")
+                        self.assertIn("vision_forward_ms", record)
+                        self.assertIn("verdict_wall_s", record)
+                        status_url = url + "/api/inspection/" + record["inspection_id"]
+                        for _ in range(100):
+                            with urlopen(status_url, timeout=5) as response:
+                                final = json.load(response)
+                            if final["llama_status"] != "PENDING":
+                                break
+                            time.sleep(.03)
+                        self.assertEqual(final["llama_status"], advisory)
+                        self.assertEqual(bool(final["llama_explanation"]), decision == "PASS")
+                        responses.append(final)
+                    with urlopen(url + "/api/system", timeout=5) as response:
+                        system = json.load(response)
+                    self.assertIsInstance(system, dict)
+                    self.assertIn("cpu_architecture", system)
                     with urlopen(url + "/api/export", timeout=5) as response:
                         self.assertEqual(json.load(response), responses[::-1])
                 finally:
                     server.shutdown()
                     worker.join()
+
+    def test_advisory_failures_do_not_touch_verdict_fields(self):
+        engine = Pipeline("/tmp", "/tmp/llama", "/tmp/tokenizer")
+        verdict = {"screening_decision": "FAIL", "required_action": "QUARANTINE",
+                   "dispensing_authorized": False}
+        with patch("pipeline.subprocess.run", side_effect=__import__("subprocess").TimeoutExpired("llama", 90)):
+            advisory = engine.advisory("defective")
+        self.assertEqual(advisory["llama_status"], "TIMEOUT")
+        self.assertEqual(verdict, {"screening_decision": "FAIL", "required_action": "QUARANTINE",
+                                   "dispensing_authorized": False})
+        class Completed:
+            returncode = 0
+            stdout = "garbage"
+            stderr = ""
+        with patch("pipeline.subprocess.run", return_value=Completed()):
+            advisory = engine.advisory("defective")
+        self.assertEqual(advisory["llama_status"], "ERROR")
+        self.assertEqual(verdict["screening_decision"], "FAIL")
+        self.assertEqual(verdict["required_action"], "QUARANTINE")
+        self.assertIs(verdict["dispensing_authorized"], False)
 
 
 if __name__ == "__main__":

@@ -92,8 +92,10 @@ class Pipeline:
                 raise RuntimeError("Experiment 2 inference failed: " + process.stderr[-400:])
             result = qc_result(process.stdout)
             result["vision_wall_s"] = round(time.monotonic() - start, 3)
-            result.update(self._advisory(result["classification"]))
             return result
+
+    def advisory(self, classification):
+        return self._advisory(classification)
 
     def _advisory(self, classification):
         start = time.monotonic()

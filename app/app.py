@@ -5,8 +5,12 @@ import base64
 import binascii
 import json
 import logging
+import os
+import platform
+import queue
 import sqlite3
 import tempfile
+import threading
 import time
 import uuid
 from contextlib import closing
@@ -53,6 +57,67 @@ def decode_request(payload):
 
 
 def make_handler(engine, database):
+    advisory_queue = queue.Queue()
+
+    def update_advisory(inspection_id):
+        try:
+            with closing(sqlite3.connect(database)) as db:
+                row = db.execute("SELECT record_json FROM inspections WHERE id = ?", (inspection_id,)).fetchone()
+            if not row:
+                return
+            record = json.loads(row[0])
+            fields = engine.advisory(record["classification"])
+            record.update(fields)
+            with closing(sqlite3.connect(database)) as db, db:
+                db.execute("UPDATE inspections SET record_json = ? WHERE id = ?",
+                           (json.dumps(record, allow_nan=False), inspection_id))
+        except Exception:
+            logging.exception("Advisory update failed for %s", inspection_id)
+
+    def worker():
+        while True:
+            inspection_id = advisory_queue.get()
+            try:
+                update_advisory(inspection_id)
+            finally:
+                advisory_queue.task_done()
+
+    threading.Thread(target=worker, name="pillguard-llama-worker", daemon=True).start()
+
+    def system_info():
+        def read_text(path):
+            try:
+                return Path(path).read_text().strip().replace("\x00", "") or None
+            except (OSError, ValueError):
+                return None
+        def meminfo_kb(key):
+            try:
+                for line in Path("/proc/meminfo").read_text().splitlines():
+                    if line.startswith(key + ":"):
+                        return int(line.split()[1]) * 1024
+            except (OSError, ValueError, IndexError):
+                pass
+            return None
+        try:
+            temperature = int(Path("/sys/class/thermal/thermal_zone0/temp").read_text().strip()) / 1000
+        except (OSError, ValueError):
+            temperature = None
+        try:
+            uptime = float(Path("/proc/uptime").read_text().split()[0])
+        except (OSError, ValueError, IndexError):
+            uptime = None
+        interfaces = []
+        try:
+            for item in Path("/sys/class/net").iterdir():
+                if item.name != "lo" and (item / "operstate").read_text().strip() == "up":
+                    interfaces.append(item.name)
+        except OSError:
+            pass
+        return {"device_model": read_text("/proc/device-tree/model"),
+                "cpu_architecture": platform.machine() or None,
+                "core_count": os.cpu_count(), "total_ram_bytes": meminfo_kb("MemTotal"),
+                "available_ram_bytes": meminfo_kb("MemAvailable"), "soc_temperature_c": temperature,
+                "uptime_s": uptime, "network_up": bool(interfaces) if Path("/sys/class/net").exists() else None}
     class Handler(BaseHTTPRequestHandler):
         def reply(self, status, payload, content_type="application/json; charset=utf-8", download=False):
             body = payload if isinstance(payload, bytes) else json.dumps(payload, ensure_ascii=False).encode()
@@ -70,6 +135,18 @@ def make_handler(engine, database):
             if self.path == "/":
                 self.reply(200, HTML, "text/html; charset=utf-8")
                 return
+            if self.path == "/api/system":
+                self.reply(200, system_info())
+                return
+            if self.path.startswith("/api/inspection/"):
+                inspection_id = self.path.rsplit("/", 1)[-1]
+                with closing(sqlite3.connect(database)) as db:
+                    row = db.execute("SELECT record_json FROM inspections WHERE id = ?", (inspection_id,)).fetchone()
+                if row:
+                    self.reply(200, json.loads(row[0]))
+                else:
+                    self.reply(404, {"error": "Inspection not found"})
+                return
             if self.path not in ("/api/history", "/api/export"):
                 self.reply(404, {"error": "Not found"})
                 return
@@ -79,8 +156,8 @@ def make_handler(engine, database):
                 rows = db.execute(query if export else query + " LIMIT 50")
                 records = [json.loads(row[0]) for row in rows]
             if not export:
-                fields = ("created_at", "source", "classification", "required_action",
-                          "llama_status", "screening_decision", "model_score")
+                fields = ("inspection_id", "created_at", "source", "classification", "required_action",
+                          "llama_status", "screening_decision", "model_score", "inspection_wall_s")
                 records = [{key: record[key] for key in fields} for record in records]
             self.reply(200, records, download=export)
 
@@ -109,11 +186,17 @@ def make_handler(engine, database):
                     image = Path(folder) / ("input" + suffix)
                     image.write_bytes(data)
                     result = engine.inspect(image)
+                vision_done = time.monotonic()
                 record = {
                     "schema_version": "1.0", "inspection_id": inspection_id,
                     "created_at": created_at, "source": source,
                     "input_validation": "OPERATOR_CONFIRMED_PILL_PRESENT",
-                    "inspection_wall_s": round(time.monotonic() - start, 3),
+                    "inspection_wall_s": round(vision_done - start, 3),
+                    "verdict_wall_s": round(vision_done - start, 3),
+                    "preprocess_ms": None,
+                    "llama_model": engine.llama_runner.name if hasattr(engine, "llama_runner") else None,
+                    "llama_status": "PENDING", "llama_explanation": "",
+                    "llama_raw_for_review": "", "llama_metrics": {}, "llama_latency_s": None,
                     **result,
                 }
                 with closing(sqlite3.connect(database)) as db, db:
@@ -128,6 +211,7 @@ def make_handler(engine, database):
                 logging.exception("Inspection %s failed", inspection_id)
                 self.reply(500, {"error": "Inspection failed. See the local PillGuard log."})
                 return
+            advisory_queue.put(inspection_id)
             self.reply(200, record)
 
         def log_message(self, fmt, *args):
@@ -158,8 +242,8 @@ def main():
         handlers=[logging.FileHandler(args.data_dir / "pillguard.log"), logging.StreamHandler()],
     )
     engine = Pipeline(args.vision_dir, args.llama_runner, args.tokenizer)
-    with ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(engine, database)) as server:
-        logging.info("PillGuard ready at http://localhost:%d", args.port)
+    with ThreadingHTTPServer(("0.0.0.0", args.port), make_handler(engine, database)) as server:
+        logging.info("PillGuard ready on port %d", args.port)
         try:
             server.serve_forever()
         except KeyboardInterrupt:
