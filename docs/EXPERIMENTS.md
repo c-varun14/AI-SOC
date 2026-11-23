@@ -1,5 +1,11 @@
-# Separate development work
+# Parallel engineering work
 
-The release preserves the working compact Llama prompt and advisory display gate from the optimized Pi deployment. The later structured advisory experiment used the same Q4 model in WSL. Its final prompt produced zero accepted answers on two prior fixtures. The gate suppressed both answers, and deterministic QC was unaffected. It was never promoted.
+The archived Pi deployment uses a compact prompt and exact-match advisory gate. The sequential Pi measurements remain useful as a baseline.
 
-The separate development branch also repaired the independent validation import and added fail-closed records for vision errors. Six isolated localhost regression tests passed. A Pi run of those changes remains unverified. Those fixes are outside the submission reference. The earlier, separately tested early-QC prototype is represented by a captured log only.
+The verdict-first flow returns PASS/FAIL after vision and deterministic QC, then updates the record when the background Llama advisory completes. An isolated prototype log records roughly 1.2 seconds to QC readiness; timing on the current release path is **[to measure 24 Nov]**. See [UI changes](UI-CHANGES.md) and the [prototype evidence](../evidence/isolated-async-reference.log).
+
+The `llama-check` work selects one of five approved QC checks from recent FAIL trends and an operator shift note. A rule-based fallback is included, and the proposed 12-scenario scoring result is **[to measure 24 Nov]**.
+
+The team is measuring INT8 versus FP32, a 1→4 thread sweep, and severity from measured defect area. These results are **[to measure 24 Nov]**.
+
+A structured advisory experiment in WSL produced no accepted answers on its two prior fixtures. The display gate suppressed both, and deterministic QC remained unchanged. This result is recorded as an experiment, not a deployed capability.

@@ -1,25 +1,21 @@
-# Actual execution flow
+# System architecture
 
 ```text
-Browser on localhost (or loopback through an SSH tunnel)
-  └─ JPEG/PNG data URL + operator confirms tablet + POST /api/inspect
-       └─ Python HTTP service validates request and image
-            └─ temporary JPEG/PNG -> run_pillguard.py
-                 ├─ Pillow/NumPy preprocessing -> little-endian float32 tensor
-                 └─ Pi ARM64 C++ ExecuTorch Module, XNNPACK, Experiment 2 forward
-                      └─ softmax probabilities, threshold 0.30, binary result
-                           └─ Python verifies output and derives deterministic QC
-                                ├─ PASS -> STANDARD_QC_REVIEW
-                                └─ FAIL -> QUARANTINE
-            └─ separate CPU llama_main -> ExecuTorch, Llama 3.2 1B Q4
-                 └─ classification-specific constrained advisory -> exact-match gate
-            └─ SQLite record -> response, history, and JSON export
+Browser
+  └─ image upload /api/inspect
+       └─ Python HTTP service validates image and operator confirmation
+            └─ Pillow + NumPy preprocessing → float32 1 × 3 × 224 × 224 tensor
+                 └─ C++ ExecuTorch EfficientNetV2-S + XNNPACK on Cortex-A72
+                      └─ defective probability → fixed threshold → PASS or FAIL
+                           └─ deterministic QC action
+                                ├─ PASS → STANDARD_QC_REVIEW
+                                └─ FAIL → QUARANTINE
+       ├─ SQLite record; history and JSON export
+       └─ background ExecuTorch Llama 3.2 1B Q4 advisory → record update
 ```
 
-The binary classification comes from the C++ executable comparing a full-precision score. Python checks the printed class and scores, with a tolerance for threshold rounding. Vision and advisory execute sequentially. Llama receives text derived from the deterministic result, with no tablet pixels or arbitrary user text. A displayed advisory must match the allowed sentence for the classification. Both QC outcomes keep dispensing authorization false. Severity stays unassessed.
+The vision result and QC rule determine the verdict and required action. Llama receives text derived from the result; it does not inspect image pixels, set PASS/FAIL, or change the action. Its output is an advisory. In the current implementation, an exact-match gate limits displayed output to the approved sentence for that class. Parallel `llama-check` work explores selecting one of five approved QC checks from the recent FAIL trend and an operator shift note, with a rule-based fallback.
 
-- **Baseline, 8765.** The binary uses its first forward result and runs ten further timed forwards. The app returns after advisory and persists the combined record. Historical reference documented in the prior audit.
-- **Optimized deployment, 8766.** A rebuilt vision wrapper uses the same first forward and omits the ten timed passes. The Llama prompt is shorter by six tokens per tested case, with the same decisions and approved sentences. The branch uses separate storage. See `app/` and `vision/`.
-- **Asynchronous prototype.** Uses the optimized vision executable, prompt and unchanged models. After vision, it commits a pending row and returns HTTP 202 with the decision. The browser shows QC and polls `/api/inspection/<id>`. The background worker writes advisory fields and completion timing only. A single slot covers both heavy subprocesses. Competing requests receive HTTP 409. No model stays resident between inspections. On startup, the prototype marks persisted pending advisory records as interrupted. It was tested in separate directories and ports, and remains outside the two working deployments.
+The HTTP response returns after vision and QC. The Llama worker updates advisory fields asynchronously, and the browser polls `/api/inspection/<id>`. SQLite persists inspections, including the independent status of the advisory. A failed or pending advisory does not change the recorded QC result. Dispensing authorization remains false for both outcomes.
 
-SQLite stores the inspection ID, timestamp, and complete JSON record. The APIs expose a recent history projection and a downloadable JSON export. The offline acceptance evidence tests normal and defective uploaded files, exact deployed hashes, and export equality following restart. Live camera input remains untested because physical hardware was unavailable.
+The browser supports image uploads, camera capture and video-frame capture. Recorded Pi acceptance and performance evidence used image uploads. See [UI changes](UI-CHANGES.md), [measured results](TECHNICAL-REPORT.md), and [offline evidence](../evidence/README.md).
