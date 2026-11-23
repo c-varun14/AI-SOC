@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+build/
+.review-data/
+data/
+*.sqlite3*
+*.pte
+*.pth
+*.pt
+*.safetensors
+*.gguf
+*.whl
+*.pem
+*.key
+.env
