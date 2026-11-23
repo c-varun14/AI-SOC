@@ -1,0 +1,59 @@
+[WARNING 2026-11-20 08:44:22,775 intmm.py:26] Warning: Detected no triton, on systems without Triton certain kernels will not work
+W1120 08:44:23.155000 587 .venv/lib/python3.12/site-packages/torch/utils/_pytree.py:646] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W1120 08:44:26.363000 587 .venv/lib/python3.12/site-packages/torch/utils/_pytree.py:646] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+I tokenizers:regex.cpp:40] Registering override fallback regex
+[INFO 2026-11-20 08:44:26,825 export_llama_lib.py:1078] Applying quantizers: []
+[INFO 2026-11-20 08:44:27,010 export_llama_lib.py:931] Checkpoint dtype: torch.bfloat16
+[INFO 2026-11-20 08:50:53,475 builder.py:194] Model after source transforms: Transformer(
+  (tok_embeddings): QuantizedGroupEmbedding()
+  (layers): ModuleList(
+    (0-15): 16 x TransformerBlock(
+      (attention): AttentionMHA(
+        (wq): Linear(in_features=2048, out_features=2048, bias=False, weight=IntxUnpackedToInt8Tensor(target_dtype=torch.int4, block_size=(1, 128), shape=torch.Size([2048, 2048]), dtype=torch.float32, device=cpu, activation_quantization=int8_asym_per_token))
+        (wk): Linear(in_features=2048, out_features=512, bias=False, weight=IntxUnpackedToInt8Tensor(target_dtype=torch.int4, block_size=(1, 128), shape=torch.Size([512, 2048]), dtype=torch.float32, device=cpu, activation_quantization=int8_asym_per_token))
+        (wv): Linear(in_features=2048, out_features=512, bias=False, weight=IntxUnpackedToInt8Tensor(target_dtype=torch.int4, block_size=(1, 128), shape=torch.Size([512, 2048]), dtype=torch.float32, device=cpu, activation_quantization=int8_asym_per_token))
+        (wo): Linear(in_features=2048, out_features=2048, bias=False, weight=IntxUnpackedToInt8Tensor(target_dtype=torch.int4, block_size=(1, 128), shape=torch.Size([2048, 2048]), dtype=torch.float32, device=cpu, activation_quantization=int8_asym_per_token))
+        (rope): Rope(
+          (apply_rotary_emb): RotaryEmbedding()
+        )
+        (kv_cache): KVCache()
+        (SDPA): SDPA()
+      )
+      (feed_forward): FeedForward(
+        (w1): Linear(in_features=2048, out_features=8192, bias=False, weight=IntxUnpackedToInt8Tensor(target_dtype=torch.int4, block_size=(1, 128), shape=torch.Size([8192, 2048]), dtype=torch.float32, device=cpu, activation_quantization=int8_asym_per_token))
+        (w2): Linear(in_features=8192, out_features=2048, bias=False, weight=IntxUnpackedToInt8Tensor(target_dtype=torch.int4, block_size=(1, 128), shape=torch.Size([2048, 8192]), dtype=torch.float32, device=cpu, activation_quantization=int8_asym_per_token))
+        (w3): Linear(in_features=2048, out_features=8192, bias=False, weight=IntxUnpackedToInt8Tensor(target_dtype=torch.int4, block_size=(1, 128), shape=torch.Size([8192, 2048]), dtype=torch.float32, device=cpu, activation_quantization=int8_asym_per_token))
+      )
+      (attention_norm): RMSNorm()
+      (ffn_norm): RMSNorm()
+    )
+  )
+  (rope): Rope(
+    (apply_rotary_emb): RotaryEmbedding()
+  )
+  (norm): RMSNorm()
+  (output): Linear(in_features=2048, out_features=128256, bias=False, weight=IntxUnpackedToInt8Tensor(target_dtype=torch.int4, block_size=(1, 128), shape=torch.Size([128256, 2048]), dtype=torch.float32, device=cpu, activation_quantization=int8_asym_per_token))
+)
+[INFO 2026-11-20 08:50:53,499 builder.py:215] Exporting with:
+[INFO 2026-11-20 08:50:53,580 builder.py:216] inputs: (tensor([[2, 3, 4]]), {'input_pos': tensor([0])})
+[INFO 2026-11-20 08:50:53,581 builder.py:217] kwargs: None
+[INFO 2026-11-20 08:50:53,586 builder.py:218] dynamic shapes: ({1: Dim('token_dim', min=0, max=255)}, {'input_pos': {0: 1}})
+/home/<pi-or-wsl-user>/PillGuard_Member2/.venv/lib/python3.12/site-packages/torch/_dynamo/utils.py:4549: FutureWarning: _check_is_size will be removed in a future PyTorch release along with guard_size_oblivious.     Use _check(i >= 0) instead.
+  return node.target(*args, **kwargs)  # type: ignore[operator]
+/home/<pi-or-wsl-user>/PillGuard_Member2/.venv/lib/python3.12/site-packages/torch/fx/interpreter.py:377: FutureWarning: _check_is_size will be removed in a future PyTorch release along with guard_size_oblivious.     Use _check(i >= 0) instead.
+  return target(*args, **kwargs)
+[INFO 2026-11-20 08:51:49,931 builder.py:254] Running canonical pass: RemoveRedundantTransposes
+[INFO 2026-11-20 08:51:50,081 export_llama_lib.py:1212] Lowering model using following partitioner(s): 
+[INFO 2026-11-20 08:51:50,081 export_llama_lib.py:1214] --> XnnpackDynamicallyQuantizedPartitioner
+[INFO 2026-11-20 08:51:50,081 export_llama_lib.py:1214] --> XnnpackPartitioner
+[INFO 2026-11-20 08:51:50,081 builder.py:393] Using pt2e [] to quantizing the model...
+[INFO 2026-11-20 08:51:50,081 builder.py:447] No quantizer provided, passing...
+[INFO 2026-11-20 08:51:50,082 builder.py:213] Re-exporting with:
+[INFO 2026-11-20 08:51:50,082 builder.py:216] inputs: (tensor([[2, 3, 4]]), {'input_pos': tensor([0])})
+[INFO 2026-11-20 08:51:50,082 builder.py:217] kwargs: None
+[INFO 2026-11-20 08:51:50,082 builder.py:218] dynamic shapes: ({1: Dim('token_dim', min=0, max=255)}, {'input_pos': {0: 1}})
+/home/<pi-or-wsl-user>/PillGuard_Member2/.venv/lib/python3.12/site-packages/executorch/exir/emit/_emitter.py:2008: UserWarning: Mutation on a buffer in the model is detected. ExecuTorch assumes buffers that are mutated in the graph have a meaningless initial state, only the shape and dtype will be serialized, unless a pass which sets meta["et_init_buffer"] to True such as InitializedMutableBufferPass is run.
+  warnings.warn(
+[INFO 2026-11-20 08:58:06,577 builder.py:577] Required memory for activation in bytes: [0, 48454464]
+[INFO 2026-11-20 08:58:07,721 utils.py:148] Saved exported program to pillguard_llama32_1b_q4_xnnpack.pte
+quantize ('tok_embeddings', Embedding(128256, 2048)) with group_size 32, bitwidth 4

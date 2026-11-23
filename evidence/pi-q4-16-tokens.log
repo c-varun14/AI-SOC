@@ -1,0 +1,10 @@
+I tokenizers:regex.cpp:40] Registering override fallback regex
+I tokenizers:regex.cpp:40] Registering override fallback regex
+E tokenizers:hf_tokenizer.cpp:167] Error parsing json file: [json.exception.parse_error.101] parse error at line 1, column 1: syntax error while parsing value - invalid literal; last read: 'I'
+<|begin_of_text|><|start_header_id|>user<|end_header_id|>
+
+In one sentence, explain why a tablet flagged by visual screening goes to quality review.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+A tablet flagged by visual screening goes to quality review because it has been identified as
+PyTorchObserver {"prefill_token_per_sec":11.2829,"decode_token_per_sec":1.74317,"prompt_tokens":27,"generated_tokens":15,"model_load_start_ms":1795174034637,"model_load_end_ms":1795174051635,"inference_start_ms":1795174051635,"inference_end_ms":1795174062633,"model_execution_start_ms":1795174062054,"model_execution_end_ms":1795174062633,"prompt_eval_end_ms":1795174054028,"first_token_ms":1795174054028,"aggregate_sampling_time_ms":1,"aggregate_model_execution_time_ms":10994,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+{"baseline_mem_available_kib": 1695888, "baseline_swap_used_kib": 0, "elapsed_seconds": 28.389, "highest_sampled_swap_used_kib": 0, "lowest_sampled_mem_available_kib": 989276, "peak_child_rss_kib": 818188, "returncode": 0, "system_counter_delta": {"oom_kill": 0, "pswpin": 0, "pswpout": 0}}
