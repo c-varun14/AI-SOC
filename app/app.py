@@ -32,6 +32,9 @@ MAX_PIXELS = 16_000_000
 def decode_request(payload):
     if not isinstance(payload, dict) or payload.get("pill_present_confirmed") is not True:
         raise ValueError("Confirm that a tablet is visible before inspection.")
+    shift_note = payload.get("shift_note", "")
+    if not isinstance(shift_note, str) or len(shift_note) > 160:
+        raise ValueError("Shift note must be text no longer than 160 characters.")
     source = payload.get("source")
     if source not in ("upload", "camera", "video_frame"):
         raise ValueError("Invalid image source.")
@@ -53,7 +56,7 @@ def decode_request(payload):
             image.verify()
     except (binascii.Error, UnidentifiedImageError, OSError, Image.DecompressionBombError) as exc:
         raise ValueError("Cannot read the selected JPEG or PNG.") from exc
-    return data, source, suffix
+    return data, source, suffix, shift_note
 
 
 def make_handler(engine, database):
@@ -62,11 +65,29 @@ def make_handler(engine, database):
     def update_advisory(inspection_id):
         try:
             with closing(sqlite3.connect(database)) as db:
-                row = db.execute("SELECT record_json FROM inspections WHERE id = ?", (inspection_id,)).fetchone()
+                row = db.execute("SELECT created_at, record_json FROM inspections WHERE id = ?", (inspection_id,)).fetchone()
             if not row:
                 return
-            record = json.loads(row[0])
-            fields = engine.advisory(record["classification"])
+            current_created_at, raw_record = row
+            record = json.loads(raw_record)
+            with closing(sqlite3.connect(database)) as db:
+                history = db.execute(
+                    "SELECT record_json FROM inspections WHERE created_at < ? ORDER BY created_at DESC LIMIT 10",
+                    (current_created_at,),
+                ).fetchall()
+            decisions = [json.loads(item[0]).get("screening_decision") for item in history]
+            last10 = sum(value == "FAIL" for value in decisions)
+            last3 = sum(value == "FAIL" for value in decisions[:3])
+            try:
+                fields = engine.advisory(
+                    record["screening_decision"], record["probability_defective"], last10, last3,
+                    record.get("shift_note", ""),
+                )
+            except TypeError:
+                # Compatibility for lightweight pipeline stand-ins in integrations.
+                fields = engine.advisory(record["classification"])
+            fields["recent_last10_fails"] = last10
+            fields["recent_last3_fails"] = last3
             record.update(fields)
             with closing(sqlite3.connect(database)) as db, db:
                 db.execute("UPDATE inspections SET record_json = ? WHERE id = ?",
@@ -173,7 +194,7 @@ def make_handler(engine, database):
                 if not 0 < length <= MAX_BODY:
                     self.reply(413, {"error": "Image request is too large or empty."})
                     return
-                data, source, suffix = decode_request(json.loads(self.rfile.read(length)))
+                data, source, suffix, shift_note = decode_request(json.loads(self.rfile.read(length)))
             except ValueError as exc:
                 self.reply(400, {"error": str(exc)})
                 return
@@ -190,6 +211,7 @@ def make_handler(engine, database):
                 record = {
                     "schema_version": "1.0", "inspection_id": inspection_id,
                     "created_at": created_at, "source": source,
+                    "shift_note": shift_note,
                     "input_validation": "OPERATOR_CONFIRMED_PILL_PRESENT",
                     "inspection_wall_s": round(vision_done - start, 3),
                     "verdict_wall_s": round(vision_done - start, 3),
