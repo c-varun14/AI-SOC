@@ -1,0 +1,8 @@
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
+set(PILL_ARM_GNU_BIN "" CACHE PATH "Directory containing the Arm GNU cross-compilers")
+if(NOT PILL_ARM_GNU_BIN)
+    message(FATAL_ERROR "Set PILL_ARM_GNU_BIN to the Arm GNU bin directory")
+endif()
+set(CMAKE_C_COMPILER "${PILL_ARM_GNU_BIN}/aarch64-none-linux-gnu-gcc")
+set(CMAKE_CXX_COMPILER "${PILL_ARM_GNU_BIN}/aarch64-none-linux-gnu-g++")

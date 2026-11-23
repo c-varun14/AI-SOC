@@ -1,0 +1,73 @@
+-- The C compiler identification is GNU 14.3.1
+-- The CXX compiler identification is GNU 14.3.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /tmp/pillguard-arm-compiler/bin/aarch64-none-linux-gnu-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /tmp/pillguard-arm-compiler/bin/aarch64-none-linux-gnu-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+CMake Warning (dev) at CMakeLists.txt:86 (find_package):
+  Policy CMP0144 is not set: find_package uses upper-case <PACKAGENAME>_ROOT
+  variables.  Run "cmake --help-policy CMP0144" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  CMake variable EXECUTORCH_ROOT is set to:
+
+    /tmp/pillguard-build-source/executorch/examples/models/llama/../../..
+
+  For compatibility, find_package is ignoring the variable, but code in a
+  .cmake module might still use it.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+aoti_cuda_backend library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+flatccrt library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+etdump library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+bundled_program library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+coreml_util library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+coreml_inmemoryfs library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+coremldelegate library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+mlxdelegate library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+mlx library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+metal_backend library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+neuron_backend library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+qnn_executorch_backend library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+extension_asr_runner library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+extension_training library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+vulkan_backend library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+quantized_ops_aot_lib library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+openvino_backend library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+torchao_ops_executorch library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+torchao_kernels_aarch64 library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+enn_backend library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+enn_logging library is not found.
+             If needed rebuild with the proper options in CMakeLists.txt
+-- Configuring done (6.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /tmp/pillguard-arm-release/examples/models/llama

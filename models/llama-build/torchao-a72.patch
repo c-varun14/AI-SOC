@@ -1,0 +1,31 @@
+diff --git a/torchao/csrc/cpu/torch_free_kernels/interface/quantized_matmul.h b/torchao/csrc/cpu/torch_free_kernels/interface/quantized_matmul.h
+index b1f17e3..56e5bae 100644
+--- a/torchao/csrc/cpu/torch_free_kernels/interface/quantized_matmul.h
++++ b/torchao/csrc/cpu/torch_free_kernels/interface/quantized_matmul.h
+@@ -11,7 +11,7 @@
+ #include <torchao/csrc/cpu/torch_free_kernels/fallback/matmul/channelwise_8bit_a_channelwise_8bit_b.h>
+ #include <torchao/csrc/cpu/torch_free_kernels/fallback/matmul/fp32_a_channelwise_8bit_b_fp32_c.h>
+ 
+-#if defined(__aarch64__) && defined(__ARM_NEON)
++#if defined(__aarch64__) && defined(__ARM_NEON) && defined(__ARM_FEATURE_DOTPROD)
+ #include <cpuinfo.h>
+ #include <torchao/csrc/cpu/torch_free_kernels/aarch64/matmul/matmul.h>
+ #endif // defined(__aarch64__) && defined(__ARM_NEON)
+@@ -66,7 +66,7 @@ get_int8_a_int8_b_channelwise_qmatmul(
+     bool b_transposed,
+     int& a_stride_m,
+     int& b_stride_n) {
+-#if defined(__aarch64__) && defined(__ARM_NEON)
++#if defined(__aarch64__) && defined(__ARM_NEON) && defined(__ARM_FEATURE_DOTPROD)
+   // This kernel uses dot-product (UDOT/SDOT, FEAT_DotProd) instructions, which
+   // are absent on ARMv8.3 and earlier (e.g. Apple A12). Dispatching it on such
+   // hardware traps with SIGILL, so gate it behind a runtime cpuinfo check and
+@@ -138,7 +138,7 @@ get_fp32_a_input_channelwise_8bit_b_f32_c_matmul(
+     bool b_transposed,
+     int& a_stride_m,
+     int& b_stride_n) {
+-#if defined(__aarch64__) && defined(__ARM_NEON)
++#if defined(__aarch64__) && defined(__ARM_NEON) && defined(__ARM_FEATURE_DOTPROD)
+   if (!a_transposed && !b_transposed && n >= 16) {
+     a_stride_m = k;
+     b_stride_n = n;
