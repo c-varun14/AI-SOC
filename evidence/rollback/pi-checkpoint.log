@@ -1,0 +1,89 @@
+Checkpoint directory: /home/<pi-or-wsl-user>/PillGuard_Baseline.TBSXF8
+PillGuard_Integration.a3llKg/app.py: OK
+PillGuard_Integration.a3llKg/index.html: OK
+PillGuard_Integration.a3llKg/pipeline.py: OK
+PillGuard_Integration.a3llKg/pillguard_safety_guard.py: OK
+PillGuard_Integration.a3llKg/run_pi.sh: OK
+PillGuard_Integration.a3llKg/offline_smoke.sh: OK
+PillGuard_Integration.a3llKg/smoke_api.py: OK
+PillGuard_Integration.a3llKg/data/pillguard.log: OK
+PillGuard_Member2/run_pillguard.py: OK
+PillGuard_Member2/preprocess_pill_deployment.py: OK
+PillGuard_Member2/pillguard_deployment_inference.cpp: OK
+PillGuard_Member2/CMakeLists.txt: OK
+PillGuard_Member2/build/pillguard_deployment_inference: OK
+PillGuard_Member2/executorch-1.6.0-cp313-cp313-manylinux_2_28_aarch64.whl: OK
+PillGuard_Member2/pillguard_efficientnetv2_s_experiment2_xnnpack.pte: OK
+PillGuard_Member2/pillguard_llama32_1b_q4_xnnpack.pte: OK
+PillGuard_Llama/et160-a72.aL7oXF/llama_main: OK
+PillGuard_Llama/et160-a72.aL7oXF/libllama_runner.so: OK
+PillGuard_Llama/et160-a72.aL7oXF/pillguard-benchmark.py: OK
+PillGuard_Llama/tokenizer.model: OK
+Linux <pi-host> 6.18.60+rpt-rpi-v8 #1 SMP PREEMPT Debian 1:6.18.60-1+rpt1 (2026-11-03) aarch64 GNU/Linux
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.7
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+Raspberry Pi 4 Model B Rev 1.4
+               total        used        free      shared  buff/cache   available
+Mem:           1.8Gi       200Mi        77Mi       5.6Mi       1.6Gi       1.6Gi
+Swap:          1.8Gi          0B       1.8Gi
+Python 3.13.5
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/importlib/metadata/__init__.py", line 407, in from_name
+    return next(iter(cls.discover(name=name)))
+StopIteration
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    from importlib.metadata import version; print({x:version(x) for x in ("numpy","pillow","executorch")})
+                                                     ~~~~~~~^^^
+  File "/usr/lib/python3.13/importlib/metadata/__init__.py", line 987, in version
+    return distribution(distribution_name).version
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/importlib/metadata/__init__.py", line 960, in distribution
+    return Distribution.from_name(distribution_name)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/importlib/metadata/__init__.py", line 409, in from_name
+    raise PackageNotFoundError(name)
+importlib.metadata.PackageNotFoundError: No package metadata was found for executorch
+libatomic1:arm64	14.2.0-19
+libc6:arm64	2.41-12+rpt1+deb13u4
+libstdc++6:arm64	14.2.0-19
+python3-numpy	1:2.2.4+ds-1
+python3-pil:arm64	11.1.0-5+deb13u4
+	linux-vdso.so.1 (0x0000007f9e85c000)
+	libexecutorch_threadpool.so => /home/<pi-or-wsl-user>/PillGuard_Member2/.venv/lib/python3.13/site-packages/executorch/lib/cmake/executorch/../../../lib/libexecutorch_threadpool.so (0x0000007f9e780000)
+	libexecutorch_kernels_optimized.so => /home/<pi-or-wsl-user>/PillGuard_Member2/.venv/lib/python3.13/site-packages/executorch/lib/cmake/executorch/../../../lib/libexecutorch_kernels_optimized.so (0x0000007f9df10000)
+	libexecutorch_backend_xnnpack.so => /home/<pi-or-wsl-user>/PillGuard_Member2/.venv/lib/python3.13/site-packages/executorch/lib/cmake/executorch/../../../lib/libexecutorch_backend_xnnpack.so (0x0000007f9dcb0000)
+	libexecutorch.so => /home/<pi-or-wsl-user>/PillGuard_Member2/.venv/lib/python3.13/site-packages/executorch/lib/cmake/executorch/../../../lib/libexecutorch.so (0x0000007f9dbe0000)
+	libstdc++.so.6 => /lib/aarch64-linux-gnu/libstdc++.so.6 (0x0000007f9d970000)
+	libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000007f9d8c0000)
+	libgcc_s.so.1 => /lib/aarch64-linux-gnu/libgcc_s.so.1 (0x0000007f9d880000)
+	libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000007f9d6c0000)
+	libpthread.so.0 => /lib/aarch64-linux-gnu/libpthread.so.0 (0x0000007f9d690000)
+	libdl.so.2 => /lib/aarch64-linux-gnu/libdl.so.2 (0x0000007f9d660000)
+	/lib/ld-linux-aarch64.so.1 (0x0000007f9e820000)
+	linux-vdso.so.1 (0x0000007f9e24a000)
+	libllama_runner.so => /home/<pi-or-wsl-user>/PillGuard_Llama/et160-a72.aL7oXF/libllama_runner.so (0x0000007f9de50000)
+	libatomic.so.1 => /lib/aarch64-linux-gnu/libatomic.so.1 (0x0000007f9de20000)
+	libstdc++.so.6 => /lib/aarch64-linux-gnu/libstdc++.so.6 (0x0000007f9dbb0000)
+	libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000007f9db00000)
+	libgcc_s.so.1 => /lib/aarch64-linux-gnu/libgcc_s.so.1 (0x0000007f9dac0000)
+	libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000007f9d900000)
+	/lib/ld-linux-aarch64.so.1 (0x0000007f9e200000)
+CMAKE_BUILD_TYPE:STRING=
+executorch_DIR:PATH=/home/<pi-or-wsl-user>/PillGuard_Member2/.venv/lib/python3.13/site-packages/executorch/lib/cmake/executorch
+/usr/bin/cmake
+/usr/bin/g++
+220fcf3ebcd6e1c1e3400db091d8d4c7859834d7e74b8f07a81af60160cc1757  /home/<pi-or-wsl-user>/PillGuard_Baseline.TBSXF8/deployment.tar
+9d3673c1500ef7652f7d20ceee46128ebe04480d63b66b5608a7140fba702012  /home/<pi-or-wsl-user>/PillGuard_Baseline.TBSXF8/history.sqlite3
+089037bcc85c37eaf4815e6086d87b334b9e1bf0810791369eedc8319eaefe55  /home/<pi-or-wsl-user>/PillGuard_Baseline.TBSXF8/history-export.json

@@ -1,0 +1,8 @@
+vision-venv-libs/libexecutorch.so: OK
+vision-venv-libs/libexecutorch_backend_xnnpack.so: OK
+vision-venv-libs/libexecutorch_kernels_optimized.so: OK
+vision-venv-libs/libexecutorch_threadpool.so: OK
+ExecuTorch wheel version: 1.6.0
+g++ (Debian 14.2.0-19) 14.2.0
+cmake version 3.31.6
+ 0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN:$ORIGIN/../lib:/home/<pi-or-wsl-user>/PillGuard_Member2/.venv/lib/python3.13/site-packages/executorch/lib/cmake/executorch/../../../lib]
