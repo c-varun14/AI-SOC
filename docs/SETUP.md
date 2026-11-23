@@ -34,4 +34,4 @@ python3 app/app.py --vision-dir vision --llama-runner "$LLAMA_MAIN" \
   --tokenizer "$LLAMA_TOKENIZER" --data-dir .review-data --port 18773
 ```
 
-Open `http://127.0.0.1:18773` in the browser connected to the review instance. Compare the decisions, advisories and export against the archived evidence. [Llama cross-build](../models/llama-build/README.md) · [Prior deployment and rollback reference](DEPLOYED-REFERENCE.md)
+Open `http://127.0.0.1:18773` in the browser connected to the review instance. Upload an authorized normal JPEG or PNG, confirm that a tablet is visible, and select **Inspect selected image**. Repeat with an authorized defective image and compare both decisions and advisories with the archived upload evidence. Open the inspection history and download the JSON export. The browser also offers **Open video** and **Capture video frame** for a selected frame from a recording. The archived acceptance and walkthrough use image uploads. [Recorded demo and acceptance evidence](../evidence/README.md) · [Llama cross-build](../models/llama-build/README.md) · [Prior deployment and rollback reference](DEPLOYED-REFERENCE.md)

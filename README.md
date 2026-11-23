@@ -4,6 +4,14 @@ PillGuard screens uploaded tablet images on a Raspberry Pi 4 Model B with 2 GB R
 
 This source tree stages the previously verified optimized deployment for **Phase 1 Open Qualifying**. Its compact Llama prompt and exact-match advisory filter are preserved. The subsequent experimental advisory and development-only safety changes are outside this revision.
 
+PS5 addresses industrial defect detection and quality control. PillGuard applies it to visible tablet defects. The binary screening output directs a tablet to standard quality review or quarantine. Dispensing authorization stays false for both results.
+
+| Team role | Responsibility |
+|---|---|
+| Member 1 | AI/ML, vision model and evaluation |
+| Member 2 | Embedded systems, Arm SoC and ExecuTorch deployment |
+| Member 3 | Browser interface and integration |
+
 | Start here | What it covers |
 |---|---|
 | [Setup and tests](docs/SETUP.md) | WSL review, hardware-dependent setup, and the locked release files. See [WSL verification](docs/WSL-VERIFICATION.md). |
