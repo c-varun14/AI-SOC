@@ -4,6 +4,8 @@ import argparse
 import base64
 import binascii
 import json
+import fcntl
+import signal
 import logging
 import os
 import platform
@@ -18,15 +20,18 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from io import BytesIO
 from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 
 from PIL import Image, UnidentifiedImageError
 
-from pipeline import Pipeline
+from pipeline import Pipeline, advisory_fields
 
 HTML = Path(__file__).with_name("index.html").read_bytes()
 MAX_BODY = 18 * 1024 * 1024
 MAX_IMAGE = 12 * 1024 * 1024
 MAX_PIXELS = 16_000_000
+ADVISORY_CAPACITY = 2
+ADVISORY_KEYS = advisory_fields("FAIL", 0, "ERROR").keys()
 
 
 def decode_request(payload):
@@ -59,47 +64,92 @@ def decode_request(payload):
     return data, source, suffix, shift_note
 
 
-def make_handler(engine, database):
-    advisory_queue = queue.Queue()
+def make_handler(engine, database, *, start=True):
+    advisory_queue = queue.Queue(maxsize=ADVISORY_CAPACITY)
+    advisory_slots = threading.BoundedSemaphore(ADVISORY_CAPACITY)
+    inspection_slot = threading.BoundedSemaphore(1)
+    stopping = threading.Event()
+    storage_failed = threading.Event()
 
-    def update_advisory(inspection_id):
-        try:
-            with closing(sqlite3.connect(database)) as db:
-                row = db.execute("SELECT created_at, record_json FROM inspections WHERE id = ?", (inspection_id,)).fetchone()
-            if not row:
-                return
-            current_created_at, raw_record = row
-            record = json.loads(raw_record)
-            with closing(sqlite3.connect(database)) as db:
-                history = db.execute(
-                    "SELECT record_json FROM inspections WHERE created_at < ? ORDER BY created_at DESC LIMIT 10",
-                    (current_created_at,),
-                ).fetchall()
-            decisions = [json.loads(item[0]).get("screening_decision") for item in history]
-            last10 = sum(value == "FAIL" for value in decisions)
-            last3 = sum(value == "FAIL" for value in decisions[:3])
-            fields = engine.advisory(
-                record["screening_decision"], record["probability_defective"], last10, last3,
-                record.get("shift_note", ""),
-            )
-            fields["recent_last10_fails"] = last10
-            fields["recent_last3_fails"] = last3
-            record.update(fields)
-            with closing(sqlite3.connect(database)) as db, db:
+    def recover_pending():
+        with closing(sqlite3.connect(database)) as db, db:
+            rows = db.execute(
+                "SELECT id, record_json FROM inspections WHERE json_extract(record_json, '$.llama_status') = 'PENDING'"
+            ).fetchall()
+            for inspection_id, raw in rows:
+                record = json.loads(raw)
+                record.update(advisory_fields(record["screening_decision"], 0, "ERROR",
+                                              diagnostic="Interrupted before advisory completion"))
                 db.execute("UPDATE inspections SET record_json = ? WHERE id = ?",
                            (json.dumps(record, allow_nan=False), inspection_id))
+
+    def save_advisory(record, inspection_id):
+        encoded = json.dumps(record, allow_nan=False)
+        for attempt in range(3):
+            try:
+                with closing(sqlite3.connect(database)) as db, db:
+                    db.execute("UPDATE inspections SET record_json = ? WHERE id = ?",
+                               (encoded, inspection_id))
+                return
+            except sqlite3.OperationalError:
+                if attempt == 2:
+                    raise
+                time.sleep(.1)
+
+    def update_advisory(inspection_id, queued_at):
+        with closing(sqlite3.connect(database)) as db:
+            row = db.execute("SELECT created_at, record_json FROM inspections WHERE id = ?",
+                             (inspection_id,)).fetchone()
+            if not row:
+                return
+            created_at, raw_record = row
+            history = db.execute(
+                "SELECT record_json FROM inspections WHERE created_at < ? ORDER BY created_at DESC, id DESC LIMIT 10",
+                (created_at,),
+            ).fetchall()
+        record = json.loads(raw_record)
+        if record["llama_status"] != "PENDING":
+            return
+        decisions = [json.loads(item[0]).get("screening_decision") for item in history]
+        last10 = decisions.count("FAIL")
+        last3 = decisions[:3].count("FAIL")
+        decision = record["screening_decision"]
+        queue_delay = time.monotonic() - queued_at
+        try:
+            if stopping.is_set() or storage_failed.is_set():
+                fields = advisory_fields(decision, last10, "ERROR", diagnostic="Service stopped before advisory")
+            else:
+                fields = engine.advisory(decision, record["probability_defective"], last10, last3,
+                                         record.get("shift_note", ""))
+            # Advisory workers may only write fields in their own contract.
+            updates = {key: fields[key] for key in ADVISORY_KEYS}
+            json.dumps(updates, allow_nan=False)
         except Exception:
-            logging.exception("Advisory update failed for %s", inspection_id)
+            logging.exception("Advisory computation failed for %s", inspection_id)
+            updates = advisory_fields(decision, last10, "ERROR", diagnostic="Advisory worker exception")
+            fields = {}
+        record.update(updates)
+        record.update(recent_last10_fails=last10, recent_last3_fails=last3,
+                      llama_queue_s=round(queue_delay + fields.get("llama_lock_wait_s", 0), 3))
+        save_advisory(record, inspection_id)
 
     def worker():
         while True:
-            inspection_id = advisory_queue.get()
+            job = advisory_queue.get()
             try:
-                update_advisory(inspection_id)
+                if job is None:
+                    return
+                update_advisory(*job)
+            except Exception:
+                storage_failed.set()
+                logging.exception("Advisory store unavailable for %s", job[0])
             finally:
+                if job is not None:
+                    advisory_slots.release()
                 advisory_queue.task_done()
 
-    threading.Thread(target=worker, name="pillguard-llama-worker", daemon=True).start()
+    recovery_complete = False
+    thread = threading.Thread(target=worker, name="pillguard-llama-worker", daemon=True)
 
     def system_info():
         def read_text(path):
@@ -155,12 +205,36 @@ def make_handler(engine, database):
             if self.path == "/api/system":
                 self.reply(200, system_info())
                 return
+            request = urlsplit(self.path)
+            if request.path == "/api/stats":
+                params = parse_qs(request.query)
+                try:
+                    start, end = (datetime.fromisoformat(params[key][0]) for key in ("start", "end"))
+                    if (start.tzinfo is None or end.tzinfo is None
+                            or not 0 < (end - start).total_seconds() <= 26 * 3600):
+                        raise ValueError
+                except (KeyError, ValueError, OverflowError):
+                    self.reply(400, {"error": "Supply a valid daily statistics range."})
+                    return
+                bounds = [date.astimezone(timezone.utc).isoformat(timespec="microseconds") for date in (start, end)]
+                with closing(sqlite3.connect(database)) as db:
+                    rows = db.execute(
+                        "SELECT json_extract(record_json, '$.screening_decision'), count(*) "
+                        "FROM inspections WHERE created_at >= ? AND created_at < ? GROUP BY 1", bounds,
+                    ).fetchall()
+                counts = dict(rows)
+                self.reply(200, {"passed": counts.get("PASS", 0), "failed": counts.get("FAIL", 0)})
+                return
             if self.path.startswith("/api/inspection/"):
                 inspection_id = self.path.rsplit("/", 1)[-1]
                 with closing(sqlite3.connect(database)) as db:
                     row = db.execute("SELECT record_json FROM inspections WHERE id = ?", (inspection_id,)).fetchone()
                 if row:
-                    self.reply(200, json.loads(row[0]))
+                    record = json.loads(row[0])
+                    if storage_failed.is_set() and record.get("llama_status") == "PENDING":
+                        record.update(advisory_fields(record["screening_decision"], 0, "ERROR",
+                                                      diagnostic="Advisory storage unavailable; restart required"))
+                    self.reply(200, record)
                 else:
                     self.reply(404, {"error": "Inspection not found"})
                 return
@@ -174,7 +248,7 @@ def make_handler(engine, database):
                 records = [json.loads(row[0]) for row in rows]
             if not export:
                 fields = ("inspection_id", "created_at", "source", "classification", "required_action",
-                          "llama_status", "screening_decision", "model_score", "probability_defective", "inspection_wall_s")
+                          "llama_status", "screening_decision", "model_score", "probability_defective", "verdict_wall_s")
                 records = [{key: record.get(key) for key in fields} for record in records]
             self.reply(200, records, download=export)
 
@@ -185,19 +259,39 @@ def make_handler(engine, database):
             if self.headers.get_content_type() != "application/json":
                 self.reply(415, {"error": "Send JSON inspection input."})
                 return
+            if storage_failed.is_set():
+                self.reply(503, {"error": "Advisory storage unavailable. Restart PillGuard after checking storage."})
+                return
+            if stopping.is_set() or not inspection_slot.acquire(blocking=False):
+                self.reply(503, {"error": "Another inspection is active. Retry shortly."})
+                return
+            if not advisory_slots.acquire(blocking=False):
+                inspection_slot.release()
+                self.reply(503, {"error": "Advisory capacity reached. Wait for a completed advisory and retry."})
+                return
+            queued = False
             try:
+                queued = self.inspect_request()
+            finally:
+                if not queued:
+                    advisory_slots.release()
+                inspection_slot.release()
+
+        def inspect_request(self):
+            start = time.monotonic()
+            try:
+                self.connection.settimeout(15)
                 length = int(self.headers.get("Content-Length", "0"))
                 if not 0 < length <= MAX_BODY:
                     self.reply(413, {"error": "Image request is too large or empty."})
                     return
                 data, source, suffix, shift_note = decode_request(json.loads(self.rfile.read(length)))
-            except ValueError as exc:
+            except (ValueError, TimeoutError) as exc:
                 self.reply(400, {"error": str(exc)})
                 return
 
             inspection_id = uuid.uuid4().hex
             created_at = datetime.now(timezone.utc).isoformat(timespec="microseconds")
-            start = time.monotonic()
             try:
                 with tempfile.TemporaryDirectory(prefix="pillguard-inspection-") as folder:
                     image = Path(folder) / ("input" + suffix)
@@ -205,11 +299,10 @@ def make_handler(engine, database):
                     result = engine.inspect(image)
                 vision_done = time.monotonic()
                 record = {
-                    "schema_version": "1.0", "inspection_id": inspection_id,
+                    "schema_version": "1.1", "inspection_id": inspection_id,
                     "created_at": created_at, "source": source,
                     "shift_note": shift_note,
                     "input_validation": "OPERATOR_CONFIRMED_PILL_PRESENT",
-                    "inspection_wall_s": round(vision_done - start, 3),
                     "verdict_wall_s": round(vision_done - start, 3),
                     "preprocess_ms": None,
                     "llama_model": engine.llama_runner.name if hasattr(engine, "llama_runner") else None,
@@ -224,19 +317,67 @@ def make_handler(engine, database):
                     )
                 logging.info("inspection=%s source=%s decision=%s qc=%s llama=%s elapsed=%.3fs",
                              inspection_id, source, result["screening_decision"],
-                             result["required_action"], record["llama_status"], record["inspection_wall_s"])
+                             result["required_action"], record["llama_status"], record["verdict_wall_s"])
             except Exception:
                 logging.exception("Inspection %s failed", inspection_id)
                 self.reply(500, {"error": "Inspection failed. See the local PillGuard log."})
                 return
-            advisory_queue.put(inspection_id)
-            self.reply(200, record)
+            advisory_queue.put_nowait((inspection_id, time.monotonic()))
+            try:
+                self.reply(200, record)
+            except OSError:
+                logging.info("Client disconnected after inspection %s was saved", inspection_id)
+            return True
 
         def log_message(self, fmt, *args):
             if self.path != "/api/history":
                 logging.info(fmt, *args)
 
+    def start_worker():
+        nonlocal recovery_complete
+        if not recovery_complete:
+            recover_pending()
+            thread.start()
+            recovery_complete = True
+
+    def stop_worker():
+        stopping.set()
+        if recovery_complete:
+            advisory_queue.put(None)
+            thread.join()
+        recover_pending()
+
+    if start:
+        start_worker()
+    Handler.start_worker = staticmethod(start_worker)
+    Handler.stop_worker = staticmethod(stop_worker)
     return Handler
+
+
+class BoundedHTTPServer(ThreadingHTTPServer):
+    daemon_threads = False
+    request_queue_size = 8
+
+    def __init__(self, *args, **kwargs):
+        self.connections = threading.BoundedSemaphore(8)
+        super().__init__(*args, **kwargs)
+
+    def process_request(self, request, address):
+        if not self.connections.acquire(blocking=False):
+            self.shutdown_request(request)
+            return
+        request.settimeout(15)
+        try:
+            super().process_request(request, address)
+        except BaseException:
+            self.connections.release()
+            raise
+
+    def process_request_thread(self, request, address):
+        try:
+            super().process_request_thread(request, address)
+        finally:
+            self.connections.release()
 
 
 def main():
@@ -252,7 +393,17 @@ def main():
 
     args.data_dir.mkdir(parents=True, exist_ok=True)
     database = args.data_dir / "history.sqlite3"
+    with (args.data_dir / "service.lock").open("a") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            parser.error("Another PillGuard process owns this data directory.")
+        serve(args, database)
+
+
+def serve(args, database):
     with closing(sqlite3.connect(database)) as db, db:
+        db.execute("PRAGMA journal_mode = WAL")
         db.execute("""CREATE TABLE IF NOT EXISTS inspections (
             id TEXT PRIMARY KEY, created_at TEXT NOT NULL, record_json TEXT NOT NULL
         )""")
@@ -262,12 +413,24 @@ def main():
         handlers=[logging.FileHandler(args.data_dir / "pillguard.log"), logging.StreamHandler()],
     )
     engine = Pipeline(args.vision_dir, args.llama_runner, args.tokenizer)
-    with ThreadingHTTPServer((args.host, args.port), make_handler(engine, database)) as server:
+    handler = make_handler(engine, database, start=False)
+
+    def request_shutdown(*_):
+        raise KeyboardInterrupt
+
+    signal.signal(signal.SIGTERM, request_shutdown)
+    server = BoundedHTTPServer((args.host, args.port), handler)
+    try:
+        handler.start_worker()
         logging.info("PillGuard ready at http://%s:%d", args.host, args.port)
         try:
             server.serve_forever()
         except KeyboardInterrupt:
-            pass
+            signal.signal(signal.SIGTERM, signal.SIG_IGN)
+            signal.signal(signal.SIGINT, signal.SIG_IGN)
+    finally:
+        server.server_close()
+        handler.stop_worker()
 
 
 if __name__ == "__main__":

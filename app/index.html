@@ -9,23 +9,362 @@
 <main><section class="card inspect"><h2>01 / Image inspection</h2><div class="previewbox"><span class="muted" id="placeholder">Select an image source to begin</span><img id="preview" alt="Selected tablet image" hidden><video id="camera" autoplay muted playsinline></video><video id="video" controls playsinline></video></div><div class="actions"><label class="filebtn" for="imagefile">Upload image</label><input id="imagefile" type="file" accept="image/jpeg,image/png"><button id="camBtn">Camera</button><label class="filebtn" for="videofile">Open video</label><input id="videofile" type="file" accept="video/*"></div><div class="confirm"><label><input id="pillConfirmed" type="checkbox"> I confirm a pharmaceutical pill/tablet is visible in this image.</label></div><div class="actions"><button id="captureBtn" hidden>Capture frame</button><label class="muted">Shift note <input id="shiftNote" type="text" maxlength="160" placeholder="Optional, max 160 characters"></label><button id="inspectBtn" class="primary" disabled>Inspect</button></div><div class="statusline" id="status">Ready for image input.</div><div class="muted">Camera access requires a secure browser origin. Pause a recorded video on the desired frame before capture.</div></section>
 <section class="card"><h2>02 / Deterministic screening verdict</h2><div id="empty" class="muted">Awaiting inspection.</div><div id="result" hidden><div class="result"><div><div class="verdict iconword" id="verdict"></div><div class="action" id="action"></div></div><div class="muted" id="decision"></div></div><div class="scorewrap"><div class="scorehead"><span>Defect probability (uncalibrated, threshold 0.30)</span><strong id="score">—</strong></div><div class="bar"><div class="fill" id="fill"></div><span class="threshold"></span></div><div class="muted" id="severity"></div></div><div class="timeline" id="timeline"></div><div class="advisory" id="advisory"><b>Llama 3.2 advisory (non-authoritative, does not affect the verdict)</b><span id="llama">Waiting for inspection.</span></div><details><summary>Technical details</summary><div id="techline" class="muted"></div><pre id="details"></pre></details></div></section>
 <section class="card session"><div class="metric">INSPECTIONS TODAY<strong id="today">0</strong></div><div class="metric">PASS<strong id="passCount">0</strong></div><div class="metric">FAIL<strong id="failCount">0</strong></div><div class="metric">DEFECT RATE<strong id="defectRate">0%</strong></div><svg class="spark" id="spark" viewBox="0 0 100 26" role="img" aria-label="Last 20 inspection results"></svg></section>
-<section class="card history"><div class="historyhead"><h2>03 / Inspection history</h2><div><button id="refresh">Refresh</button> <button id="export">Export JSON</button></div></div><div class="tablewrap"><table><thead><tr><th>Time</th><th>Source</th><th>Decision</th><th>Action</th><th>P(defect)</th><th>Llama</th><th>Total time</th></tr></thead><tbody id="history"></tbody></table></div></section></main>
+<section class="card history"><div class="historyhead"><h2>03 / Inspection history</h2><div><button id="refresh">Refresh</button> <button id="export">Export JSON</button></div></div><div class="tablewrap"><table><thead><tr><th>Time</th><th>Source</th><th>Decision</th><th>Action</th><th>P(defect)</th><th>Llama</th><th>Server to verdict</th></tr></thead><tbody id="history"></tbody></table></div></section></main>
 <script>
-const $=id=>document.getElementById(id);let imageData=null,source='upload',stream=null,videoURL=null,current=null,pollTimer=null,elapsedTimer=null,llamaStarted=0;
-function setStatus(s,e=false){$('status').textContent=s;$('status').className='statusline'+(e?' error':'')}function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;$('camera').srcObject=null}}
-function setImage(data,src){stopCamera();$('video').pause();imageData=data;source=src;$('pillConfirmed').checked=false;$('preview').src=data;$('preview').hidden=false;$('placeholder').hidden=true;$('camera').style.display='none';$('video').style.display='none';$('captureBtn').hidden=true;$('inspectBtn').disabled=true;setStatus('Image ready. Confirm visibility to enable inspection.')}
-function fileData(f){return new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=()=>no(Error('Cannot read file'));r.readAsDataURL(f)})}
-$('imagefile').onchange=async e=>{if(e.target.files[0])try{setImage(await fileData(e.target.files[0]),'upload')}catch(x){setStatus(x.message,true)}};
-$('camBtn').onclick=async()=>{imageData=null;$('pillConfirmed').checked=false;$('inspectBtn').disabled=true;try{stopCamera();stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});$('camera').srcObject=stream;$('camera').style.display='block';$('video').style.display='none';$('preview').hidden=true;$('placeholder').hidden=true;$('captureBtn').hidden=false;source='camera';setStatus('Camera active. Capture an image.')}catch(x){setStatus('Camera unavailable: '+x.message,true)}};
-$('videofile').onchange=e=>{let f=e.target.files[0];if(!f)return;stopCamera();imageData=null;$('pillConfirmed').checked=false;$('inspectBtn').disabled=true;if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(f);$('video').src=videoURL;$('video').style.display='block';$('camera').style.display='none';$('preview').hidden=true;$('placeholder').hidden=true;$('captureBtn').hidden=false;$('captureBtn').textContent='Capture video frame';source='video_frame';setStatus('Pause at the desired frame, then capture.')};
-$('captureBtn').onclick=()=>{const v=source==='camera'?$ ('camera'):$('video');if(!v.videoWidth){setStatus('Wait until a video frame is available.',true);return}const c=document.createElement('canvas'),scale=Math.min(1,1600/Math.max(v.videoWidth,v.videoHeight));c.width=Math.round(v.videoWidth*scale);c.height=Math.round(v.videoHeight*scale);c.getContext('2d').drawImage(v,0,0,c.width,c.height);setImage(c.toDataURL('image/jpeg',.9),source)};
-$('pillConfirmed').onchange=()=>{$('inspectBtn').disabled=!imageData||!$('pillConfirmed').checked};
-function stage(name,time){return `<div class="stage"><strong>${name}</strong>${time??'—'}</div>`}
-function render(d){current=d;$('empty').hidden=true;$('result').hidden=false;const fail=d.screening_decision==='FAIL';$('verdict').className='verdict iconword '+(fail?'fail':'pass');$('verdict').innerHTML=`<span aria-hidden="true">${fail?'■':'✓'}</span><span>${fail?'FAIL':'PASS'}</span>`;$('action').textContent=fail?'Quarantine':'Continue to standard QC review';$('decision').textContent=d.classification.toUpperCase();$('score').textContent=(100*d.probability_defective).toFixed(1)+'%';$('fill').style.width=(100*d.probability_defective)+'%';$('severity').textContent=d.severity==='NOT_ASSESSED'?'Severity: Not assessed in Phase 1':'Severity: '+d.severity;$('techline').textContent='Dispensing authorized: '+String(d.dispensing_authorized)+' · Inspection '+d.inspection_id;$('details').textContent=JSON.stringify(d,null,2);const elapsed=d.llama_status==='PENDING'?`${(d.vision_forward_ms??0).toFixed(0)} ms · advisory elapsed ${Math.max(0,(Date.now()-llamaStarted)/1000).toFixed(1)} s`:`${(d.vision_forward_ms??0).toFixed(0)} ms`;const metrics=d.llama_metrics||{};const tok=metrics.decode_token_per_sec!=null?Number(metrics.decode_token_per_sec).toFixed(2):null;const llamaTime=d.llama_status==='PENDING'?`running · ${Math.max(0,(Date.now()-llamaStarted)/1000).toFixed(1)} s elapsed`:((tok!=null?`${tok} tok/s decode · `:'')+`${d.llama_latency_s??'—'} s`);$('timeline').innerHTML=[stage('ExecuTorch vision · XNNPACK · Arm CPU',`${Number(d.vision_forward_ms).toFixed(0)} ms forward`),stage('Verdict + QC rule',`${Number(d.verdict_wall_s).toFixed(2)} s end to end`),stage('Llama 3.2 1B · ExecuTorch',llamaTime),stage('Saved',d.created_at?new Date(d.created_at).toLocaleTimeString():'—')].join('');$('llama').textContent=d.llama_status==='PENDING'?`Running on device · ${Math.max(0,(Date.now()-llamaStarted)/1000).toFixed(1)} s elapsed`:d.advisory_check_id?`Suggested check ${d.advisory_check_id}: ${d.advisory_check_text}\n${d.advisory_source==='llama'?`Chosen by Llama 3.2 1B on-device${tok!=null?' · '+tok+' tok/s':''} · ${d.llama_latency_s??'—'} s`:'Rule fallback (Llama reply not valid)'}\nRecent: ${d.recent_last10_fails??0} of last 10 FAIL · note: \"${d.shift_note||''}\"`: `Advisory ${d.llama_status}. Deterministic QC instruction remains in force.`;$('details').textContent=JSON.stringify(d,null,2);if(d.llama_status==='PENDING'){clearTimeout(pollTimer);pollTimer=setTimeout(()=>poll(d.inspection_id),700)}}
-async function poll(id){try{const r=await fetch('/api/inspection/'+encodeURIComponent(id));const d=await r.json();if(r.ok)render(d);loadHistory()}catch(e){$('llama').textContent='Advisory status temporarily unavailable.'}}
-$('inspectBtn').onclick=async()=>{if(!imageData||!$('pillConfirmed').checked)return;$('inspectBtn').disabled=true;setStatus('Running vision and deterministic QC…');llamaStarted=Date.now();try{const r=await fetch('/api/inspect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:imageData,source,pill_present_confirmed:true,shift_note:$('shiftNote').value.slice(0,160)})});const d=await r.json();if(!r.ok)throw Error(d.error||'Inspection failed');render(d);setStatus('Verdict saved · '+d.inspection_id);loadHistory()}catch(e){setStatus('ERROR: '+e.message,true)}finally{$('inspectBtn').disabled=!imageData||!$('pillConfirmed').checked}};
-function paintSession(a){const today=new Date().toISOString().slice(0,10),t=a.filter(x=>x.created_at?.slice(0,10)===today),fails=t.filter(x=>x.screening_decision==='FAIL').length;$('today').textContent=t.length;$('passCount').textContent=t.length-fails;$('failCount').textContent=fails;$('defectRate').textContent=(t.length?100*fails/t.length:0).toFixed(1)+'%';const last=a.slice(0,20).reverse(),svg=$('spark');svg.replaceChildren();if(last.length>1){const pts=last.map((x,i)=>`${i*100/(last.length-1)},${x.screening_decision==='FAIL'?3:22}`).join(' '),line=document.createElementNS(svg.namespaceURI,'polyline');line.setAttribute('points',pts);line.setAttribute('fill','none');line.setAttribute('stroke','#176b68');line.setAttribute('stroke-width','2');svg.append(line)}}
-async function loadHistory(){try{const r=await fetch('/api/history'),a=await r.json(),body=$('history');body.replaceChildren();for(const d of a){const tr=document.createElement('tr'),vals=[new Date(d.created_at).toLocaleTimeString(),d.source,d.screening_decision,d.required_action,(100*(d.probability_defective??d.model_score)).toFixed(1)+'%',d.llama_status,d.inspection_wall_s==null?'—':Number(d.inspection_wall_s).toFixed(2)+' s'];for(const v of vals){const td=document.createElement('td');td.textContent=v;tr.append(td)}tr.onclick=async()=>{try{const q=await fetch('/api/inspection/'+encodeURIComponent(d.inspection_id));render(await q.json())}catch(e){}};body.append(tr)}paintSession(a)}catch(e){$('history').textContent='History unavailable: '+e.message}}
-async function loadSystem(){try{const r=await fetch('/api/system'),d=await r.json(),ram=d.total_ram_bytes?`${(d.available_ram_bytes/1073741824).toFixed(1)}/${(d.total_ram_bytes/1073741824).toFixed(1)} GB free`:'RAM unavailable',parts=[d.device_model||'Device model unavailable',d.cpu_architecture||'CPU unavailable',d.core_count?`${d.core_count} cores`:null,ram,d.soc_temperature_c==null?null:`${d.soc_temperature_c.toFixed(0)} °C`].filter(Boolean),off=d.network_up===false;$('device').innerHTML=`${parts.join(' · ')} · <span class="${off?'offline':'online'}">${off?'OFFLINE':'NETWORK UP'}</span>`}catch(e){$('device').textContent='Device status unavailable'}}
-$('refresh').onclick=loadHistory;$('export').onclick=()=>location.href='/api/export';loadHistory();loadSystem();setInterval(loadSystem,5000);setInterval(()=>{if(current?.llama_status==='PENDING')render(current)},1000);
+const $ = id => document.getElementById(id);
+let imageData = null;
+let source = 'upload';
+let stream = null;
+let videoURL = null;
+let mediaVersion = 0;
+let viewVersion = 0;
+let historyVersion = 0;
+let pollTimer;
+let pollController;
+let submitting = false;
+let currentId = null;
+let currentPending = false;
+
+function setStatus(message, error = false) {
+  $('status').textContent = message;
+  $('status').className = error ? 'statusline error' : 'statusline';
+}
+
+function syncInspect() {
+  $('inspectBtn').disabled = submitting || !imageData || !$('pillConfirmed').checked;
+}
+
+function resetMedia() {
+  mediaVersion++;
+  stream?.getTracks().forEach(track => track.stop());
+  stream = null;
+  $('camera').srcObject = null;
+  $('video').pause();
+  $('video').removeAttribute('src');
+  $('video').load();
+  if (videoURL) URL.revokeObjectURL(videoURL);
+  videoURL = null;
+  $('preview').hidden = true;
+  $('camera').style.display = 'none';
+  $('video').style.display = 'none';
+  $('captureBtn').hidden = true;
+  $('placeholder').hidden = false;
+  imageData = null;
+  $('pillConfirmed').checked = false;
+  syncInspect();
+  return mediaVersion;
+}
+
+function setImage(data, inputSource) {
+  resetMedia();
+  imageData = data;
+  source = inputSource;
+  $('preview').src = data;
+  $('preview').hidden = false;
+  $('placeholder').hidden = true;
+  setStatus('Image ready. Confirm visibility to enable inspection.');
+}
+
+$('imagefile').onchange = event => {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+  const version = resetMedia();
+  if (!['image/jpeg', 'image/png'].includes(file.type) || file.size > 12 * 1024 * 1024) {
+    setStatus('Select a JPEG or PNG image up to 12 MiB.', true);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    if (version === mediaVersion) setImage(reader.result, 'upload');
+  };
+  reader.onerror = () => {
+    if (version === mediaVersion) setStatus('Cannot read the selected file.', true);
+  };
+  reader.readAsDataURL(file);
+};
+
+$('camBtn').onclick = async () => {
+  const version = resetMedia();
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw Error('Live capture needs a secure origin. Take a phone photo and upload it.');
+    }
+    const camera = await navigator.mediaDevices.getUserMedia({video: true, audio: false});
+    if (version !== mediaVersion) {
+      camera.getTracks().forEach(track => track.stop());
+      return;
+    }
+    stream = camera;
+    $('camera').srcObject = stream;
+    $('camera').style.display = 'block';
+    $('placeholder').hidden = true;
+    $('captureBtn').textContent = 'Capture photo';
+    $('captureBtn').hidden = false;
+    source = 'camera';
+    setStatus('Camera active. Capture a photo.');
+  } catch (error) {
+    if (version === mediaVersion) setStatus(error.message, true);
+  }
+};
+
+$('videofile').onchange = event => {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+  resetMedia();
+  videoURL = URL.createObjectURL(file);
+  $('video').src = videoURL;
+  $('video').style.display = 'block';
+  $('placeholder').hidden = true;
+  $('captureBtn').textContent = 'Capture video frame';
+  $('captureBtn').hidden = false;
+  source = 'video_frame';
+  setStatus('Pause at the desired frame, then capture.');
+};
+$('video').onerror = () => {
+  if (source === 'video_frame' && videoURL) {
+    resetMedia();
+    setStatus('Cannot play the selected video.', true);
+  }
+};
+
+$('captureBtn').onclick = () => {
+  const video = $(source === 'camera' ? 'camera' : 'video');
+  if (video.readyState < 2 || !video.videoWidth) {
+    setStatus('Wait until a video frame is available.', true);
+    return;
+  }
+  const canvas = document.createElement('canvas');
+  const scale = Math.min(1, 1600 / Math.max(video.videoWidth, video.videoHeight));
+  canvas.width = Math.round(video.videoWidth * scale);
+  canvas.height = Math.round(video.videoHeight * scale);
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+  setImage(canvas.toDataURL('image/jpeg', .9), source);
+};
+$('pillConfirmed').onchange = syncInspect;
+
+function metric(value, decimals, suffix) {
+  return Number.isFinite(value) ? value.toFixed(decimals) + suffix : '—';
+}
+
+function stage(label, value) {
+  const node = document.createElement('div');
+  node.className = 'stage';
+  const title = document.createElement('strong');
+  title.textContent = label;
+  node.append(title, value);
+  return node;
+}
+
+function advisoryStatus(status) {
+  return ({COMPLETED_DISPLAYED: 'COMPLETED', COMPLETED_NOT_APPROVED: 'FALLBACK'})[status] || status;
+}
+
+function render(record) {
+  $('empty').hidden = true;
+  $('result').hidden = false;
+  const verdict = record.screening_decision;
+  const valid = verdict === 'PASS' || verdict === 'FAIL';
+  $('verdict').className = 'verdict iconword ' + (verdict === 'PASS' ? 'pass' : 'fail');
+  $('verdict').textContent = valid ? verdict : 'UNKNOWN';
+  $('action').textContent = {
+    FAIL: 'Quarantine', PASS: 'Continue to standard QC review',
+  }[valid ? verdict : ''] || 'Review required. Screening result unavailable.';
+  $('decision').textContent = valid ? String(record.classification || '').toUpperCase() : '';
+  const score = Number.isFinite(record.probability_defective) ? record.probability_defective * 100 : NaN;
+  $('score').textContent = metric(score, 1, '%');
+  $('fill').style.width = Number.isFinite(score) ? Math.max(0, Math.min(100, score)) + '%' : '0%';
+  $('severity').textContent = 'Severity: Not assessed in Phase 1';
+  $('techline').textContent = 'Dispensing authorized: false · Inspection ' + record.inspection_id;
+  $('details').textContent = JSON.stringify(record, null, 2);
+
+  const state = advisoryStatus(record.llama_status);
+  const stages = [
+    stage('Vision forward', metric(record.vision_forward_ms, 0, ' ms')),
+    stage('Server to verdict', metric(record.verdict_wall_s, 2, ' s')),
+    stage('Advisory queue', metric(record.llama_queue_s, 2, ' s')),
+    stage('Llama execution', metric(record.llama_latency_s, 2, ' s')),
+  ];
+  $('timeline').replaceChildren(...stages);
+  const compatible = valid && Number.isInteger(record.advisory_check_id) &&
+    record.advisory_check_id >= 1 && record.advisory_check_id <= 5 &&
+    !(verdict === 'FAIL' && record.advisory_check_id === 1);
+  const origin = record.advisory_source === 'llama' ? 'Local Llama' : 'Rule fallback';
+  $('llama').textContent = state === 'PENDING'
+    ? 'PENDING · Waiting for the local advisory'
+    : compatible && record.advisory_check_text
+      ? state + ' · ' + origin + '\n' + record.advisory_check_text + '\nConfirm with a QC operator.'
+      : 'Advisory unavailable. Follow the required QC action.';
+}
+
+async function json(url, options) {
+  const response = await fetch(url, options);
+  const result = await response.json();
+  if (!response.ok) throw Error(result.error || 'Request failed');
+  return result;
+}
+
+function changeView() {
+  clearTimeout(pollTimer);
+  pollController?.abort();
+  currentId = null;
+  currentPending = false;
+  return ++viewVersion;
+}
+
+function showRecord(record, version) {
+  if (version !== viewVersion) return;
+  currentId = record.inspection_id;
+  currentPending = record.llama_status === 'PENDING';
+  render(record);
+  if (currentPending) schedulePoll(currentId, version);
+}
+
+function schedulePoll(id, version, delay = 900, deadline = Date.now() + 240000) {
+  pollTimer = setTimeout(async () => {
+    if (version !== viewVersion || id !== currentId) return;
+    if (Date.now() >= deadline) {
+      $('llama').textContent = 'Advisory status unavailable. Reopen this inspection to refresh.';
+      return;
+    }
+    const controller = new AbortController();
+    pollController = controller;
+    const requestDeadline = setTimeout(() => controller.abort(), 7000);
+    try {
+      const record = await json('/api/inspection/' + encodeURIComponent(id), {signal: controller.signal});
+      if (version !== viewVersion || id !== currentId || record.inspection_id !== id) return;
+      currentPending = record.llama_status === 'PENDING';
+      render(record);
+      if (currentPending) schedulePoll(id, version, 900, deadline);
+      else loadHistory();
+    } catch (error) {
+      if (version !== viewVersion || id !== currentId) return;
+      $('llama').textContent = 'PENDING · Status unavailable, retrying';
+      schedulePoll(id, version, 2500, deadline);
+    } finally {
+      clearTimeout(requestDeadline);
+    }
+  }, delay);
+}
+
+$('inspectBtn').onclick = async () => {
+  if (submitting || !imageData || !$('pillConfirmed').checked) return;
+  submitting = true;
+  syncInspect();
+  const previousId = currentPending ? currentId : null;
+  const version = changeView();
+  setStatus('Waiting for the server verdict…');
+  try {
+    const record = await json('/api/inspect', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({image: imageData, source, pill_present_confirmed: true,
+        shift_note: $('shiftNote').value.slice(0, 160)}),
+    });
+    showRecord(record, version);
+    if (version === viewVersion) setStatus('Verdict saved · ' + record.inspection_id);
+    loadHistory();
+  } catch (error) {
+    if (version === viewVersion) {
+      setStatus(error.message, true);
+      if (previousId) {
+        currentId = previousId;
+        schedulePoll(previousId, version);
+      }
+    }
+  } finally {
+    submitting = false;
+    syncInspect();
+  }
+};
+
+async function selectHistory(id) {
+  const version = changeView();
+  try {
+    const record = await json('/api/inspection/' + encodeURIComponent(id));
+    if (record.inspection_id === id) showRecord(record, version);
+  } catch (error) {
+    if (version === viewVersion) setStatus(error.message, true);
+  }
+}
+
+function paintSession(stats, records) {
+  const total = stats.passed + stats.failed;
+  $('today').textContent = total;
+  $('passCount').textContent = stats.passed;
+  $('failCount').textContent = stats.failed;
+  $('defectRate').textContent = (total ? 100 * stats.failed / total : 0).toFixed(1) + '%';
+  const recent = records.filter(r => ['PASS', 'FAIL'].includes(r.screening_decision)).slice(0, 20).reverse();
+  const svg = $('spark');
+  svg.replaceChildren();
+  if (recent.length < 2) return;
+  const points = recent.map((r, i) => `${i * 100 / (recent.length - 1)},${r.screening_decision === 'FAIL' ? 3 : 22}`);
+  const line = document.createElementNS(svg.namespaceURI, 'polyline');
+  line.setAttribute('points', points.join(' '));
+  line.setAttribute('fill', 'none');
+  line.setAttribute('stroke', '#176b68');
+  line.setAttribute('stroke-width', '2');
+  svg.append(line);
+}
+
+async function loadHistory() {
+  const version = ++historyVersion;
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const range = new URLSearchParams({start: start.toISOString(), end: end.toISOString()});
+  try {
+    const [records, stats] = await Promise.all([json('/api/history'), json('/api/stats?' + range)]);
+    if (version !== historyVersion) return;
+    const body = $('history');
+    body.replaceChildren();
+    for (const record of records) {
+      const row = document.createElement('tr');
+      const timestamp = document.createElement('button');
+      timestamp.textContent = new Date(record.created_at).toLocaleString();
+      timestamp.onclick = () => selectHistory(record.inspection_id);
+      const values = [timestamp, record.source, record.screening_decision, record.required_action,
+        metric(record.probability_defective * 100, 1, '%'), advisoryStatus(record.llama_status),
+        metric(record.verdict_wall_s, 2, ' s')];
+      for (const value of values) {
+        const cell = document.createElement('td');
+        cell.append(value ?? '—');
+        row.append(cell);
+      }
+      body.append(row);
+    }
+    paintSession(stats, records);
+  } catch (error) {
+    if (version === historyVersion) setStatus('History unavailable: ' + error.message, true);
+  }
+}
+
+async function loadSystem() {
+  try {
+    const data = await json('/api/system');
+    const ram = data.total_ram_bytes && data.available_ram_bytes != null
+      ? `${(data.available_ram_bytes / 2 ** 30).toFixed(1)}/${(data.total_ram_bytes / 2 ** 30).toFixed(1)} GiB available`
+      : 'RAM unavailable';
+    const network = data.network_up == null ? 'Link state unavailable'
+      : data.network_up ? 'Network interface up' : 'No active network interface';
+    $('device').textContent = [data.device_model, data.cpu_architecture, ram,
+      data.soc_temperature_c == null ? null : metric(data.soc_temperature_c, 0, ' °C'), network]
+      .filter(Boolean).join(' · ');
+  } catch (error) {
+    $('device').textContent = 'Device status unavailable';
+  }
+}
+
+$('refresh').onclick = loadHistory;
+$('export').onclick = () => { location.href = '/api/export'; };
+window.addEventListener('pagehide', () => {
+  resetMedia();
+  changeView();
+});
+window.addEventListener('pageshow', event => {
+  if (event.persisted) loadHistory();
+});
+loadHistory();
+loadSystem();
+setInterval(loadSystem, 5000);
 </script></body></html>
