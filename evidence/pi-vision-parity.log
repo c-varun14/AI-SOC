@@ -1,0 +1,24 @@
+/sys/class/video4linux/video10: bcm2835-codec-decode
+/sys/class/video4linux/video11: bcm2835-codec-encode
+/sys/class/video4linux/video12: bcm2835-codec-isp
+/sys/class/video4linux/video13: bcm2835-isp-output0
+/sys/class/video4linux/video14: bcm2835-isp-capture0
+/sys/class/video4linux/video15: bcm2835-isp-capture1
+/sys/class/video4linux/video16: bcm2835-isp-stats2
+/sys/class/video4linux/video18: bcm2835-codec-image_fx
+/sys/class/video4linux/video19: rpi-hevc-dec
+/sys/class/video4linux/video20: bcm2835-isp-output0
+/sys/class/video4linux/video21: bcm2835-isp-capture0
+/sys/class/video4linux/video22: bcm2835-isp-capture1
+/sys/class/video4linux/video23: bcm2835-isp-stats2
+/sys/class/video4linux/video31: bcm2835-codec-encode_image
+pillguard_experiment2_validation_predictions.csv: compared 30 inputs
+pillguard_experiment2_validation_predictions.csv: compared 60 inputs
+{"batch": "pillguard_experiment2_validation_predictions.csv", "inputs": 60, "max_printed_probability_difference": 0, "decision_mismatches": []}
+pillguard_batch_predictions.csv: compared 30 inputs
+pillguard_batch_predictions.csv: compared 60 inputs
+pillguard_batch_predictions.csv: compared 90 inputs
+pillguard_batch_predictions.csv: compared 120 inputs
+pillguard_batch_predictions.csv: compared 150 inputs
+pillguard_batch_predictions.csv: compared 180 inputs
+{"batch": "pillguard_batch_predictions.csv", "inputs": 200, "max_printed_probability_difference": 0, "decision_mismatches": []}

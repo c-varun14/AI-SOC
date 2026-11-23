@@ -1,0 +1,6 @@
+669989df23f1168e3dbbf3ca9e8646be7039589eebdc0720356fec807872e8d7  /home/<pi-or-wsl-user>/PillGuard_Member2/pillguard_efficientnetv2_s_experiment2_xnnpack.pte
+0862c6d5bff2270d4e506f9f2ce415b24adf997068c98b9548487e3dfff659e6  /home/<pi-or-wsl-user>/PillGuard_Member2/pillguard_llama32_1b_q4_xnnpack.pte
+82e9d31979e92ab929cd544440f129d9ecd797b69e327f80f17e1c50d5551b55  /home/<pi-or-wsl-user>/PillGuard_Llama/tokenizer.model
+51858c3cfc1add54d806931d1f9d601504b26f7a90d1aa61e61fbbb49eb4d083  /home/<pi-or-wsl-user>/PillGuard_Member2/build/pillguard_deployment_inference
+fcd358b36014eae61de4f3224e00e6fe6c0a2c93bebf37329f6aba2b5946ccf7  /home/<pi-or-wsl-user>/PillGuard_Llama/et160-a72.aL7oXF/llama_main
+acd7a548dda64b8d2e543fa132858d532e881e25e4c15945301927d018a3c33f  /home/<pi-or-wsl-user>/PillGuard_Llama/et160-a72.aL7oXF/libllama_runner.so
