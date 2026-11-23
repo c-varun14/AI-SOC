@@ -1,6 +1,6 @@
 # PillGuard Phase 1 release candidate
 
-**Status:** Prepared for final joint Raspberry Pi and phone acceptance. The submission deadline is **25 November 2026, 11:59 p.m. IST**. The official demo still needs to be recorded. The organizer evaluates the first submission.
+**Status:** Physical smartphone acceptance complete by owner confirmation (10/10). Tested application frozen at `0b05219`. The submission deadline is **25 November 2026, 11:59 p.m. IST**. The official demo still needs to be recorded. The organizer evaluates the first submission.
 
 ## Candidate and evidence
 
@@ -23,7 +23,7 @@ The server became ready in 0.352 s. The first inspection was service-cold with u
 
 Available memory was about 1.57 GiB at service readiness and reached a sampled low of 897 MiB. The sampled maximum Llama RSS was 799 MiB, vision RSS was 160 MiB and summed RC process RSS peaked at 828 MiB. Sampled swap use remained zero, Linux swap and OOM counters stayed unchanged, and service exit was zero with no sampled child processes remaining. SoC temperature ranged from 46.3 to 69.1 °C. Firmware reported `0x80000` at both endpoints, a prior soft-temperature-limit event with no active bits in those readings. [Raspberry Pi firmware flags](https://www.raspberrypi.com/documentation/computers/os.html#get_throttled)
 
-This is a three-case controlled run. Real phone capture, repeated mobile workflow and extended thermal stability remain manual acceptance checks.
+This is a three-case controlled run. The later independent audit recorded two additional label disagreements, a 20.343 s contended verdict, and a safety stop at 75.471 °C before the 15-minute target. Extended high-duty stability remains unverified.
 
 ## Launch for manual acceptance
 
@@ -51,7 +51,11 @@ Phone URL after launch: `http://10.188.40.215:18776`. Camera permission in the b
 
 Stop the two foreground RC commands with Ctrl+C. The original upgraded review is already available at `http://10.188.40.215:18774`. Check from the Pi with `curl -fsS http://127.0.0.1:18773/api/system`. The RC database remains in its separate directory. The protected deployments on ports 8765 and 8766 are outside this procedure.
 
-## Manual acceptance
+## Owner-confirmed smartphone acceptance
+
+The project owner reports 10/10 checks passed on a physical smartphone connected to the actual Raspberry Pi RC. The checks were dashboard access, real tablet photo capture and upload, normal PASS, defective FAIL with quarantine, completed Llama advisory, correct Llama or rule-fallback provenance, video-frame inspection, inspection history, JSON export, and a session without crashes or connection issues. These are owner-confirmed results. Independent verification used browser emulation and native Pi runs separately.
+
+The following procedure can be reused for the official recording.
 
 1. Open the RC on the real phone. Take a JPEG with the phone camera and upload it. Confirm the tablet is visible. Check that the preview and operator confirmation are required.
 2. Run the prechecked normal and defective images. Confirm PASS/standard QC review and FAIL/quarantine at the fixed threshold. Verify the QC verdict is locked while each advisory is pending and after it completes or falls back.
@@ -63,7 +67,8 @@ Stop the two foreground RC commands with Ctrl+C. The original upgraded review is
 ## Submission checklist
 
 - [x] Prepare the local RC and release evidence. Existing GitHub `main` is public at the archived hardware-evidence revision.
-- [ ] Finish manual phone and hardware acceptance and decide which revision the team authorizes for publication.
+- [x] Complete physical smartphone acceptance (owner-confirmed).
+- [ ] Approve the frozen source revision and reviewed documents for publication.
 - [ ] Record the official two-minute demo from the accepted release. Review text, artifacts and measured claims with the team.
 - [ ] After approval, publish the authorized source and video links and verify reviewer access.
 - [ ] Attach the reviewed Phase 1 report, enter registered team information in the [organizer form](https://forms.gle/3KyscquPFG8rS9ASA), and secure team approval before the first submission.

@@ -37,6 +37,12 @@ The test confusion matrix is TP=82, FN=18, FP=16, TN=84. Dataset audit notes ide
 
 Three consecutive inspections completed on ARM64 with only loopback in the process namespace. First-service and warm idle HTTP verdicts were 1.227 s and 1.187 s. The next request waited 19.999 s while the prior Llama process used the sole native execution slot. Vision forward stayed within 324.311–327.111 ms. Llama runner wall time ranged from 18.966 to 19.367 s. Two advisories were accepted and one used safe fallback. Sampled available memory stayed above 896 MiB. No swap use increase or OOM event was observed. This small run does not establish sustained throughput. [Pi trace and manual checklist](PHASE1-RELEASE.md)
 
+## Physical smartphone acceptance
+
+The project owner reports 10/10 checks passed on a physical smartphone connected to the actual Raspberry Pi RC. The checks were dashboard access, real tablet photo capture and upload, normal PASS, defective FAIL with quarantine, completed Llama advisory, correct Llama or rule-fallback provenance, video-frame inspection, inspection history, JSON export, and a session without crashes or connection issues. These are owner-confirmed results. Independent verification used browser emulation and native Pi runs separately.
+
+The independent acceptance audit also recorded two additional sample label disagreements, a 20.343 s contended verdict, and a high-duty run stopped at 75.471 °C. These limitations remain applicable.
+
 ## Llama role and evaluation method
 
 The Llama model never sets the screening verdict or required action. The thresholded vision result and deterministic rule select PASS/standard QC review or FAIL/quarantine. Llama receives text context and returns a constrained, non-authoritative advisory that is stored separately from the decision.
