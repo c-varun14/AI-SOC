@@ -1,0 +1,66 @@
+PILLGUARD - FRESH PHARMAVISION DATASET
+DATASET INTEGRITY AUDIT
+
+Dataset:
+PharmaVision dataset
+
+Location:
+/mnt/c/Users/<workspace-user>/Downloads/archive/PharmaVision dataset
+
+Total images audited: 640
+
+SPLIT COUNTS
+Train:
+  Defective: 190
+  Normal:    190
+
+Validation:
+  Defective: 30
+  Normal:    30
+
+Test:
+  Defective: 100
+  Normal:    100
+
+EXACT DUPLICATE AUDIT
+Cross-split exact SHA-256 duplicates: 0
+
+PERCEPTUAL HASH AUDIT
+Train vs Validation: 12 candidates
+Train vs Test:       49 candidates
+Validation vs Test:   1 candidate
+
+Total candidates: 62
+Threshold: Hamming distance <= 8
+
+VISUAL SCREENING
+Priority candidates (distance <= 6): 19
+Remaining candidates (distance > 6): 43
+Total candidates visually screened: 62
+
+No confirmed duplicate photographs identified
+during visual screening of the supplied contact sheets.
+
+CLASS LABEL REVIEW
+No confirmed cross-class duplicate photograph
+identified during visual screening.
+
+LIMITATIONS
+- pHash is a screening technique, not proof of identity.
+- Contact sheets were used for visual review.
+- Full-resolution comparison of every candidate
+  has not been performed.
+- This audit does not guarantee absence of all
+  possible dataset leakage.
+
+DECISION
+The fresh dataset is a promising candidate for
+the next PillGuard training experiment.
+
+Preserve the original dataset unchanged.
+Use a separate working copy for any future
+training preparation.
+
+Do not claim the dataset is absolutely leakage-free.
+
+STATUS: INITIAL INTEGRITY SCREENING COMPLETED
