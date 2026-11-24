@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write a self-contained Chrome smoke test for the unchanged dashboard script."""
+"""Write a self-contained Chrome smoke test for the dashboard."""
 import argparse
 from pathlib import Path
 
@@ -51,6 +51,13 @@ CHECK = """
   };
   try{
     assert(innerWidth<=850,'mobile width');
+    for(const id of ['imagefile','videofile']){
+      const picker=$(id);
+      picker.focus();
+      assert(document.activeElement===picker && picker.tabIndex===0,id+' keyboard focus');
+      assert(picker.labels.length===1,id+' accessible label');
+      assert(getComputedStyle(picker.labels[0]).outlineStyle==='solid',id+' visible focus');
+    }
     await until(()=>$('today').textContent==='67','full-day counts');
     assert($('device').textContent.includes('Network interface up'),'interface label');
     // A real one-pixel PNG; Chrome must decode it for the preview.
@@ -74,6 +81,11 @@ CHECK = """
     await until(()=>oldPoll,'old advisory request');
     await $('inspectBtn').onclick();
     assert($('verdict').textContent==='FAIL','new FAIL verdict');
+    const marker=document.querySelector('.threshold');
+    assert(getComputedStyle(marker,'::after').content==='none','overlapping threshold label');
+    assert(document.querySelector('.scorehead').textContent.includes('threshold 0.30'),
+           'threshold remains readable');
+    assert(document.documentElement.scrollWidth===document.documentElement.clientWidth,'mobile page overflow');
     assert($('llama').textContent.includes('Rule fallback'),'advisory provenance');
     releaseOld();
     await wait(100);
